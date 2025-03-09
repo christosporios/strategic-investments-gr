@@ -1,0 +1,54 @@
+[
+  {
+    "dateApproved": "2023-07-15",
+    "beneficiary": "Sample Company A.E.",
+    "name": "Development of Renewable Energy Park",
+    "totalAmount": 15000000,
+    "reference": {
+      "fek": "ΦΕΚ B' 123/15.07.2023",
+      "diavgeiaADA": "ΑΒΓΔΕΖΘΙΚΛΜ123"
+    },
+    "amountBreakdown": [
+      {
+        "amount": 10000000,
+        "description": "Construction costs"
+      },
+      {
+        "amount": 3000000,
+        "description": "Equipment purchase"
+      },
+      {
+        "amount": 2000000,
+        "description": "Technical studies and licensing"
+      }
+    ],
+    "locations": [
+      {
+        "description": "Main facility",
+        "textLocation": "Περιοχή Ασπροπύργου, Αττική",
+        "lat": 38.0582,
+        "lon": 23.5965
+      }
+    ],
+    "fundingSource": [
+      {
+        "source": "Ταμείο Ανάκαμψης και Ανθεκτικότητας",
+        "perc": 40,
+        "amount": 6000000
+      },
+      {
+        "source": "Ίδια κεφάλαια",
+        "perc": 60,
+        "amount": 9000000
+      }
+    ],
+    "incentivesApproved": [
+      {
+        "name": "Φορολογικά κίνητρα άρθρου 9"
+      },
+      {
+        "name": "Επιτάχυνση αδειοδότησης"
+      }
+    ]
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "name": "strategic-investments",
+  "version": "1.0.0",
+  "description": "Χρησιμοποιεί το API του Προγράμματος Δι@υγεια για την εύρεση στρατηγικών επενδύσεων, και συγκεκριμένα πράξεις χορήγησης κινήτρων, και την εξαγωγή δεδομένων.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "collect": "node --loader ts-node/esm src/scripts/collect-data.ts",
+    "collect:period": "node --loader ts-node/esm src/scripts/collect-data.ts --startDate $npm_config_startDate --endDate $npm_config_endDate",
+    "start": "TS_NODE_PROJECT=tsconfig.web.json webpack serve --config webpack.config.mjs --mode development --open",
+    "build": "TS_NODE_PROJECT=tsconfig.web.json NODE_ENV=production webpack --config webpack.config.mjs --mode production",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["strategic-investments", "diavgeia", "greece", "transparency"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^6.10.0",
+    "gh-pages": "^6.1.1",
+    "html-webpack-plugin": "^5.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "style-loader": "^3.3.4",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "webpack": "^5.90.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "homepage": "https://[username].github.io/strategic-investments"
+}
