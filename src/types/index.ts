@@ -27,6 +27,7 @@ export interface Reference {
     fek: string;
     diavgeiaADA: string;
     revisesADA?: string;
+    ministryUrl?: string;
 }
 
 export interface Investment {
@@ -46,4 +47,6 @@ export interface CollectDataParams {
     startDate?: string;
     endDate?: string;
     ignoreExisting?: boolean;
+    skipMinistry?: boolean;
+    skipDiavgeia?: boolean;
 } 

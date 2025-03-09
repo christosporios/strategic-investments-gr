@@ -134,12 +134,29 @@
 @tailwind utilities;
 
 /* Mapbox custom styles */
+.mapboxgl-popup {
+  z-index: 1000 !important; /* Ensure popups appear above all other map elements */
+}
+
 .mapboxgl-popup-content {
-  @apply p-3 shadow-lg rounded-lg;
+  @apply p-0 shadow-xl rounded-xl overflow-hidden border border-gray-100;
+  min-width: 260px;
+  max-width: 300px;
 }
 
 .mapboxgl-popup-close-button {
-  @apply p-1 text-gray-500 hover:text-gray-800;
+  @apply p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors;
+  font-size: 18px;
+  z-index: 10;
+  right: 2px;
+  top: 2px;
+}
+
+/* Style the popup tip/arrow */
+.mapboxgl-popup-tip {
+  border-top-color: white !important;
+  border-bottom-color: white !important;
+  z-index: 1000;
 }
 
 .mapboxgl-ctrl-logo {

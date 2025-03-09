@@ -14,7 +14,7 @@ import { Investment, Incentive } from '../../types';
 import { Category, CategoryColors, DEFAULT_CATEGORY_COLOR } from '../../types/constants';
 import IncentiveTag from './IncentiveTag';
 import DetailView from './DetailView';
-import { greekFuzzyFilter } from './TableUtils';
+import { greekFuzzyFilter, getInvestmentId } from './TableUtils';
 
 interface InvestmentTableProps {
     investments: Investment[];
@@ -45,11 +45,15 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({
 
     // Handle selectedInvestment to expand the corresponding row
     useEffect(() => {
-        if (selectedInvestment && selectedInvestment.reference?.diavgeiaADA) {
+        if (selectedInvestment) {
+            // Generate ID for the selected investment
+            const selectedId = getInvestmentId(selectedInvestment);
+
             // Find the row index for the selected investment
-            const rowIndex = investments.findIndex(
-                inv => inv.reference?.diavgeiaADA === selectedInvestment.reference?.diavgeiaADA
-            );
+            const rowIndex = investments.findIndex(inv => {
+                const invId = getInvestmentId(inv);
+                return invId === selectedId;
+            });
 
             if (rowIndex !== -1) {
                 // Expand the row
@@ -60,7 +64,10 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({
 
                 // Scroll to the investment row
                 setTimeout(() => {
-                    const element = document.getElementById(`investment-${selectedInvestment.reference?.diavgeiaADA}`);
+                    // Use the universal ID for the element ID
+                    const elementId = `investment-${selectedId.replace(/:/g, '-')}`;
+                    const element = document.getElementById(elementId);
+
                     if (element) {
                         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -69,6 +76,8 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({
                         setTimeout(() => {
                             element.classList.remove('bg-yellow-100');
                         }, 2000);
+                    } else {
+                        console.warn(`Element with ID ${elementId} not found`);
                     }
                 }, 100);
             }
@@ -316,7 +325,7 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({
                                     <tr
                                         className={`${isExpanded ? 'bg-blue-50' : 'hover:bg-gray-50'} cursor-pointer`}
                                         onClick={() => toggleRowExpanded(row.id)}
-                                        id={`investment-${investment.reference?.diavgeiaADA || ''}`}
+                                        id={`investment-${getInvestmentId(investment).replace(/:/g, '-')}`}
                                     >
                                         {row.getVisibleCells().map(cell => (
                                             <td

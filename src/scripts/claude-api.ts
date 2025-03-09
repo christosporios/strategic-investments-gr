@@ -476,3 +476,387 @@ export async function processBatch<T, R>(
 
     return results;
 }
+
+/**
+ * Extract investment data from a ministry website HTML page using Claude
+ * @param html HTML content of the ministry page
+ * @param url URL of the ministry page
+ * @param basicData Partial investment data already extracted
+ * @returns Structured Investment data or null if extraction failed
+ */
+export async function extractMinistryInvestmentData(
+    html: string,
+    url: string,
+    basicData: Partial<Investment>
+): Promise<Investment | null> {
+    const maxRetries = 5;
+    let retryCount = 0;
+    let backoffTime = 2000; // Start with 2 seconds
+
+    while (retryCount <= maxRetries) {
+        try {
+            console.log(`Extracting data from ministry URL: ${url}`);
+
+            // Get a fresh client instance
+            const client = getAnthropicClient();
+
+            // Use Claude to extract structured data from the HTML
+            const message = await client.messages.create({
+                model: MODEL,
+                max_tokens: 8192,
+                temperature: 0,
+                system: "You are an expert in Greek strategic investments and government data. Your task is to extract structured information from HTML content of investment websites.",
+                messages: [
+                    {
+                        role: "user",
+                        content: [
+                            {
+                                type: "text",
+                                text: `Please analyze this strategic investment webpage content and extract the following data in the exact format specified:
+
+URL Context:
+${url}
+
+HTML Content (truncated for brevity):
+${html.substring(0, 15000)}
+
+Extract these fields:
+1. Date approved (dateApproved): Date in YYYY-MM-DD format
+2. Beneficiary company (beneficiary): Full name of the company 
+3. Name of the investment project (name): Full project name
+
+4. Total amount in euros (totalAmount): Number with no formatting
+   - CRITICAL: The total amount is one of the most important pieces of information
+   - Look for phrases like "συνολικό κόστος", "συνολικό ποσό επένδυσης", "προϋπολογισμός επένδυσης"
+   - Ensure you extract just the number with no currency symbols or formatting
+
+5. References:
+   - Government Gazette reference (fek): Exact FEK reference in the format "ΦΕΚ [SERIES]/[NUMBER]/[DATE]" (e.g., "ΦΕΚ Β' 123/15.07.2023")
+
+6. Amount breakdown (amountBreakdown): List of {amount: number, description: string}
+   - This should capture how the money will be spent (NOT the funding sources)
+   - Example: [{amount: 10000000, description: "Construction costs"}, {amount: 5000000, description: "Equipment"}]
+
+7. Locations (locations): List of {description: string, textLocation: string}
+   - List each location where the investment will be built/established
+   - Format the textLocation in a way that helps geocoding with city, region, postal code when possible
+
+8. Funding source (fundingSource): List of {source: string, perc?: number, amount?: number}
+   - This should list how the project will be funded (eg. own funds, bank loans)
+
+9. Incentives approved (incentivesApproved): List of {name: string, incentiveType?: string}
+   - List all incentives that were approved in the document
+   - Classify each incentive according to the same predefined types used for diavgeia data
+
+10. Category (category): One of the following strings that best describes the investment's sector:
+   - PRODUCTION_MANUFACTURING
+   - TECHNOLOGY_INNOVATION
+   - TOURISM_CULTURE
+   - SERVICES_EDUCATION
+   - HEALTHCARE_WELFARE
+   - You MUST select EXACTLY ONE category that best matches the investment
+
+I've already attempted to extract the following, please use this as a starting point and correct/enhance it:
+${JSON.stringify(basicData, null, 2)}
+
+IMPORTANT:
+- Make your best effort to find ALL requested information
+- If information is unclear or appears in multiple places, choose the most authoritative occurrence
+- Return ONLY the exact data structure specified with no additional text or explanations`
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            // Extract the JSON from Claude's response
+            try {
+                const responseContent = message.content.find(block => block.type === 'text');
+                if (!responseContent || responseContent.type !== 'text') {
+                    throw new Error("No text content in Claude's response");
+                }
+
+                const jsonResponse = responseContent.text.trim();
+                // Extract JSON object from the response
+                const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) {
+                    throw new Error("No JSON object found in Claude's response");
+                }
+
+                const investmentData = JSON.parse(jsonMatch[0]) as Investment;
+
+                // Ensure reference object exists and preserves the ministryUrl
+                if (!investmentData.reference) {
+                    investmentData.reference = {
+                        fek: '',
+                        diavgeiaADA: '',
+                        ministryUrl: url
+                    };
+                } else if (!investmentData.reference.ministryUrl) {
+                    investmentData.reference.ministryUrl = url;
+                }
+
+                // Ensure all required fields exist with defaults if necessary
+                if (!investmentData.dateApproved) {
+                    investmentData.dateApproved = 'Unknown';
+                }
+
+                if (!investmentData.beneficiary) {
+                    investmentData.beneficiary = basicData.beneficiary || 'Unknown';
+                }
+
+                if (!investmentData.name) {
+                    investmentData.name = basicData.name || 'Unknown investment';
+                }
+
+                if (!investmentData.totalAmount && basicData.totalAmount) {
+                    investmentData.totalAmount = basicData.totalAmount;
+                } else if (!investmentData.totalAmount) {
+                    investmentData.totalAmount = 0;
+                }
+
+                if (!Array.isArray(investmentData.amountBreakdown)) {
+                    investmentData.amountBreakdown = [];
+                }
+
+                if (!Array.isArray(investmentData.locations)) {
+                    investmentData.locations = [];
+                }
+
+                if (!Array.isArray(investmentData.fundingSource)) {
+                    investmentData.fundingSource = [];
+                }
+
+                if (!Array.isArray(investmentData.incentivesApproved)) {
+                    investmentData.incentivesApproved = [];
+                }
+
+                // Validate the category is one of the enum values (if provided)
+                if (investmentData.category && !Object.values(Category).includes(investmentData.category as Category)) {
+                    console.warn(`Invalid category value: ${investmentData.category}, setting to undefined`);
+                    investmentData.category = undefined;
+                }
+
+                // Normalize funding source percentages if they are whole numbers instead of decimals
+                if (investmentData.fundingSource && investmentData.fundingSource.length > 0) {
+                    investmentData.fundingSource = investmentData.fundingSource.map(source => {
+                        if (source.perc !== undefined && source.perc > 0) {
+                            // If percentage is over 1, it's likely in whole percent format (e.g. 70 instead of 0.7)
+                            if (source.perc > 1) {
+                                console.log(`Normalizing funding percentage: ${source.perc} → ${source.perc / 100} for ${source.source}`);
+                                source.perc = source.perc / 100;
+                            }
+                        }
+                        return source;
+                    });
+                }
+
+                return investmentData;
+            } catch (error) {
+                console.error(`Error parsing extracted data for ministry URL ${url}:`, error);
+                console.log('Claude response:', message.content);
+                return null;
+            }
+        } catch (error: any) {
+            // Handle rate limit errors with exponential backoff
+            if (error.status === 429) {
+                if (retryCount < maxRetries) {
+                    const retryAfter = error.headers?.['retry-after'] ?
+                        parseInt(error.headers['retry-after'], 10) * 1000 :
+                        backoffTime;
+
+                    console.log(`Rate limit hit for ${url}. Retrying after ${retryAfter / 1000} seconds... (Attempt ${retryCount + 1}/${maxRetries})`);
+
+                    await sleep(retryAfter);
+                    backoffTime *= 2; // Exponential backoff
+                    retryCount++;
+                    continue; // Retry the operation
+                } else {
+                    console.error(`Maximum retries (${maxRetries}) reached for ${url}. Skipping document.`);
+                }
+            }
+
+            console.error(`Error extracting data from ministry URL ${url}:`, error);
+            return null;
+        }
+
+        // If we reach here without hitting a continue, we've either succeeded or hit a non-retryable error
+        break;
+    }
+
+    // If we've exhausted all retries without success
+    if (retryCount > maxRetries) {
+        console.error(`Failed to extract data from ministry URL ${url} after ${maxRetries} attempts.`);
+    }
+
+    return null;
+}
+
+/**
+ * Deduplicate investments using Claude to compare and identify duplicates
+ * @param diavgeiaInvestments Investments from Diavgeia API
+ * @param ministryInvestments Investments from Ministry website
+ * @param onProgress Progress callback
+ * @returns Combined and deduplicated array of investments
+ */
+export async function deduplicateInvestments(
+    diavgeiaInvestments: Investment[],
+    ministryInvestments: Investment[],
+    onProgress: (completed: number, total: number) => void
+): Promise<Investment[]> {
+    console.log('\n🔍 Starting deduplication process...');
+
+    // First filter out ministry investments that have a diavgeiaADA (shouldn't happen, but just in case)
+    const ministryOnly = ministryInvestments.filter(inv =>
+        !inv.reference?.diavgeiaADA || inv.reference.diavgeiaADA === '');
+
+    console.log(`Found ${ministryOnly.length} ministry investments without diavgeiaADA`);
+
+    // For each ministry investment, check if it's a duplicate of a diavgeia investment
+    const batchSize = 5; // Process in small batches to avoid rate limits
+    const duplicatesMap = new Map<string, string>(); // Maps ministry URL to diavgeia ADA
+
+    // Process the ministry investments in batches
+    let processed = 0;
+
+    for (let i = 0; i < ministryOnly.length; i += batchSize) {
+        const batch = ministryOnly.slice(i, i + batchSize);
+
+        // Process each investment in the batch sequentially (to avoid rate limits)
+        for (const ministryInv of batch) {
+            const ministryUrl = ministryInv.reference?.ministryUrl;
+            if (!ministryUrl) continue;
+
+            try {
+                // Get a fresh client instance
+                const client = getAnthropicClient();
+
+                // Extract key fields for comparison
+                const ministryData = {
+                    name: ministryInv.name,
+                    beneficiary: ministryInv.beneficiary,
+                    totalAmount: ministryInv.totalAmount,
+                    locations: ministryInv.locations,
+                    url: ministryUrl,
+                    fek: ministryInv.reference?.fek || ''
+                };
+
+                // Prepare a subset of diavgeia investments with similar criteria for comparison
+                const potentialMatches = diavgeiaInvestments
+                    .filter(d => {
+                        // Simple filtering to reduce candidates
+                        const nameMatch = d.name && ministryInv.name &&
+                            (d.name.toLowerCase().includes(ministryInv.name.toLowerCase().substring(0, 10)) ||
+                                ministryInv.name.toLowerCase().includes(d.name.toLowerCase().substring(0, 10)));
+
+                        const beneficiaryMatch = d.beneficiary && ministryInv.beneficiary &&
+                            (d.beneficiary.toLowerCase().includes(ministryInv.beneficiary.toLowerCase().substring(0, 10)) ||
+                                ministryInv.beneficiary.toLowerCase().includes(d.beneficiary.toLowerCase().substring(0, 10)));
+
+                        const amountSimilar = ministryInv.totalAmount > 0 && d.totalAmount > 0 &&
+                            Math.abs(d.totalAmount - ministryInv.totalAmount) / Math.max(d.totalAmount, ministryInv.totalAmount) < 0.2;
+
+                        return nameMatch || beneficiaryMatch || amountSimilar;
+                    })
+                    .slice(0, 20); // Limit to 20 candidates for performance
+
+                if (potentialMatches.length === 0) {
+                    console.log(`No potential matches found for ${ministryUrl}`);
+                    processed++;
+                    onProgress(processed, ministryOnly.length);
+                    continue;
+                }
+
+                console.log(`Comparing ministry investment "${ministryInv.name}" with ${potentialMatches.length} potential matches...`);
+
+                // Use Claude to find duplicates
+                const message = await client.messages.create({
+                    model: MODEL,
+                    max_tokens: 1000,
+                    temperature: 0,
+                    system: "You are an expert at identifying duplicate investments in different data sources. Your task is to determine if a ministry website investment is the same as any investment from the Diavgeia database.",
+                    messages: [
+                        {
+                            role: "user",
+                            content: `I need to identify if this investment from the ministry website is a duplicate of any investment from the Diavgeia database.
+
+Ministry Website Investment:
+${JSON.stringify(ministryData, null, 2)}
+
+Potential Matching Investments from Diavgeia:
+${JSON.stringify(potentialMatches.map(d => ({
+                                name: d.name,
+                                beneficiary: d.beneficiary,
+                                totalAmount: d.totalAmount,
+                                locations: d.locations,
+                                ada: d.reference?.diavgeiaADA || '',
+                                fek: d.reference?.fek || ''
+                            })), null, 2)}
+
+Analyze these investments and determine:
+1. Is the ministry investment a duplicate of any of the Diavgeia investments?
+2. If yes, which one? (provide the ADA code)
+3. How confident are you in this match? (high, medium, low)
+
+Return your answer as a JSON object with this structure:
+{
+  "isDuplicate": true/false,
+  "matchedADA": "ADA code if duplicate, empty string if not",
+  "confidence": "high/medium/low",
+  "explanation": "Brief explanation of your reasoning"
+}
+
+Important considerations:
+- Matching names and beneficiaries might have slight variations in spelling or formatting
+- Location information is critical - investments in completely different locations are not duplicates
+- Total amounts should be reasonably close for duplicates (within ~10-20%)
+- If FEK references match, it's a strong indicator of a duplicate`
+                        }
+                    ]
+                });
+
+                // Extract the result from Claude's response
+                const responseContent = message.content.find(block => block.type === 'text');
+                if (!responseContent || responseContent.type !== 'text') {
+                    throw new Error("No text content in Claude's response");
+                }
+
+                const jsonResponse = responseContent.text.trim();
+                const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) {
+                    throw new Error("No JSON object found in Claude's response");
+                }
+
+                const result = JSON.parse(jsonMatch[0]);
+
+                if (result.isDuplicate && result.matchedADA && result.confidence !== 'low') {
+                    console.log(`✅ Found duplicate: Ministry URL ${ministryUrl} matches Diavgeia ADA ${result.matchedADA} (confidence: ${result.confidence})`);
+                    duplicatesMap.set(ministryUrl, result.matchedADA);
+                } else {
+                    console.log(`❌ No duplicate found for ministry URL ${ministryUrl}`);
+                }
+
+            } catch (error) {
+                console.error(`Error during deduplication for ${ministryUrl}:`, error);
+            }
+
+            processed++;
+            onProgress(processed, ministryOnly.length);
+
+            // Add a small delay between requests to avoid rate limits
+            await sleep(1000);
+        }
+    }
+
+    console.log(`\n🔍 Deduplication complete: Found ${duplicatesMap.size} duplicates out of ${ministryOnly.length} ministry investments`);
+
+    // Filter out ministry investments that were found to be duplicates
+    const uniqueMinistryInvestments = ministryOnly.filter(inv =>
+        !inv.reference?.ministryUrl || !duplicatesMap.has(inv.reference.ministryUrl)
+    );
+
+    console.log(`Adding ${uniqueMinistryInvestments.length} unique ministry investments to the dataset`);
+
+    // Combine diavgeia investments with unique ministry investments
+    return [...diavgeiaInvestments, ...uniqueMinistryInvestments];
+}

@@ -154,7 +154,7 @@ const HelpView: React.FC<HelpViewProps> = ({ metadata }) => {
                         <div>
                             <h3 className="font-semibold text-lg mb-2">1. Αναζήτηση στη Διαύγεια</h3>
                             <p className="text-gray-500">
-                                Πραγματοποιείται αναζήτηση στο Πρόγραμμα Διαύγεια για τις αποφάσεις του Υπουργείου Ανάπτυξης σχετικά με τις στρατηγικές επενδύσεις:
+                                Πραγματοποιείται αναζήτηση στο Πρόγραμμα Διαύγεια για τις αποφάσεις του Υπουργείου Ανάπτυξης:
                             </p>
                             <ul className="list-disc pl-6 mt-2 space-y-1 text-gray-500 text-sm">
                                 <li>Αποφάσεις από τον συγκεκριμένο φορέα (organizationUid:100081597 - Υπουργείο Ανάπτυξης)</li>
@@ -164,33 +164,46 @@ const HelpView: React.FC<HelpViewProps> = ({ metadata }) => {
                         </div>
 
                         <div>
-                            <h3 className="font-semibold text-lg mb-2">2. Φιλτράρισμα & Επεξεργασία</h3>
+                            <h3 className="font-semibold text-lg mb-2">2. Συλλογή από το Υπουργείο Ανάπτυξης</h3>
                             <p className="text-gray-500">
-                                Τα δεδομένα υποβάλλονται σε επεξεργασία για να εντοπιστούν οι σχετικές αποφάσεις:
+                                Παράλληλα, συλλέγονται πληροφορίες από την ιστοσελίδα του Υπουργείου Ανάπτυξης:
                             </p>
                             <ul className="list-disc pl-6 mt-2 space-y-1 text-gray-500 text-sm">
-                                <li>Αναγνώριση και ομαδοποίηση αναθεωρήσεων και διορθώσεων αποφάσεων (τροποποιήσεις, ορθές επαναλήψεις, κλπ.)</li>
-                                <li>Φιλτράρισμα για εντοπισμό μόνο των αποφάσεων που αφορούν έγκριση χορήγησης κινήτρων για στρατηγικές επενδύσεις</li>
-                                <li>Αποφυγή διπλής καταμέτρησης επενδύσεων με διατήρηση μόνο των πιο πρόσφατων εκδόσεων των αποφάσεων</li>
+                                <li>Έργα από τις περιφερειακές σελίδες στρατηγικών επενδύσεων</li>
+                                <li>Καταχωρημένα επενδυτικά έργα που ενδέχεται να μην έχουν ακόμη αναρτηθεί στη Διαύγεια</li>
+                                <li>Πρόσθετα στοιχεία που μπορεί να μην περιλαμβάνονται στις αποφάσεις της Διαύγειας</li>
                             </ul>
                         </div>
 
                         <div>
-                            <h3 className="font-semibold text-lg mb-2">3. Εξαγωγή Δεδομένων</h3>
+                            <h3 className="font-semibold text-lg mb-2">3. Φιλτράρισμα & Επεξεργασία</h3>
                             <p className="text-gray-500">
-                                Από κάθε έγγραφο εξάγεται με αυτοματοποιημένο τρόπο δομημένη πληροφορία:
+                                Τα δεδομένα υποβάλλονται σε επεξεργασία για να εντοπιστούν οι σχετικές πληροφορίες:
+                            </p>
+                            <ul className="list-disc pl-6 mt-2 space-y-1 text-gray-500 text-sm">
+                                <li>Αναγνώριση και ομαδοποίηση αναθεωρήσεων και διορθώσεων αποφάσεων</li>
+                                <li>Φιλτράρισμα για εντοπισμό αποφάσεων έγκρισης χορήγησης κινήτρων</li>
+                                <li>Εντοπισμός και αποφυγή διπλοτύπων μεταξύ των δύο πηγών δεδομένων</li>
+                                <li>Διατήρηση μόνο των πιο πρόσφατων εκδόσεων των αποφάσεων</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">4. Εξαγωγή Δεδομένων</h3>
+                            <p className="text-gray-500">
+                                Από κάθε πηγή εξάγεται με αυτοματοποιημένο τρόπο δομημένη πληροφορία:
                             </p>
                             <ul className="list-disc pl-6 mt-2 space-y-1 text-gray-500 text-sm">
                                 <li>Όνομα επένδυσης, δικαιούχος και ημερομηνία έγκρισης</li>
                                 <li>Συνολικό ποσό επένδυσης και ανάλυση προϋπολογισμού</li>
                                 <li>Τοποθεσίες υλοποίησης της επένδυσης</li>
                                 <li>Πηγές χρηματοδότησης και εγκεκριμένα κίνητρα</li>
-                                <li>Στοιχεία αναφοράς (ΑΔΑ Διαύγειας, ΦΕΚ)</li>
+                                <li>Στοιχεία αναφοράς (ΑΔΑ Διαύγειας, ΦΕΚ, URL Υπουργείου)</li>
                             </ul>
                         </div>
 
                         <div>
-                            <h3 className="font-semibold text-lg mb-2">4. Εμπλουτισμός Δεδομένων</h3>
+                            <h3 className="font-semibold text-lg mb-2">5. Εμπλουτισμός Δεδομένων</h3>
                             <p className="text-gray-500">
                                 Τα εξαγόμενα δεδομένα εμπλουτίζονται με γεωχωρικές πληροφορίες:
                             </p>
@@ -223,20 +236,36 @@ const HelpView: React.FC<HelpViewProps> = ({ metadata }) => {
                     </p>
 
                     <div className="my-4 bg-blue-50 border border-blue-200 rounded-md p-4">
-                        <h3 className="font-semibold text-blue-800 mb-2">Πηγή δεδομένων</h3>
-                        <p className="text-blue-700 text-sm">
-                            Τα δεδομένα που παρουσιάζονται στην εφαρμογή προέρχονται αποκλειστικά από το
-                            <a
-                                href="https://diavgeia.gov.gr/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:underline font-medium mx-1 inline-flex items-center"
-                            >
-                                Πρόγραμμα Διαύγεια
-                                <ExternalLink className="h-3.5 w-3.5 ml-1" />
-                            </a>
-                            και συγκεκριμένα από τις αποφάσεις έγκρισης χορήγησης κινήτρων για στρατηγικές επενδύσεις της Μονάδας Στρατηγικών Επενδύσεων του Υπουργείου Ανάπτυξης.
+                        <h3 className="font-semibold text-blue-800 mb-2">Πηγές δεδομένων</h3>
+                        <p className="text-blue-700 text-sm mb-2">
+                            Τα δεδομένα που παρουσιάζονται στην εφαρμογή προέρχονται από δύο κύριες πηγές:
                         </p>
+                        <ul className="list-disc pl-6 space-y-1 text-blue-700 text-sm">
+                            <li>
+                                <a
+                                    href="https://diavgeia.gov.gr/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:underline font-medium inline-flex items-center"
+                                >
+                                    Πρόγραμμα Διαύγεια
+                                    <ExternalLink className="h-3.5 w-3.5 ml-1" />
+                                </a>
+                                : Αποφάσεις έγκρισης χορήγησης κινήτρων από τη Μονάδα Στρατηγικών Επενδύσεων
+                            </li>
+                            <li>
+                                <a
+                                    href="https://ependyseis.mindev.gov.gr/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:underline font-medium inline-flex items-center"
+                                >
+                                    Υπουργείο Ανάπτυξης
+                                    <ExternalLink className="h-3.5 w-3.5 ml-1" />
+                                </a>
+                                : Επενδυτικά έργα που παρουσιάζονται στην επίσημη ιστοσελίδα του Υπουργείου
+                            </li>
+                        </ul>
                     </div>
 
                     <p className="text-sm text-gray-500 mt-4">

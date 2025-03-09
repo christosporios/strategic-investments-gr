@@ -155,4 +155,106 @@ export const downloadCSV = (csvContent: string, filename: string): void => {
 // Create a URL for the Diavgeia decision
 export const createDiavgeiaURL = (ada: string): string => {
     return `https://diavgeia.gov.gr/decision/view/${encodeURIComponent(ada)}`;
-}; 
+};
+
+/**
+ * Generate a universal identifier for an investment
+ * This handles cases where the investment doesn't have a Diavgeia ADA
+ * @param investment The investment object
+ * @returns A string identifier that's unique for the investment
+ */
+export const getInvestmentId = (investment: Investment): string => {
+    // First try to use the Diavgeia ADA if available
+    if (investment.reference?.diavgeiaADA) {
+        return `ada:${investment.reference.diavgeiaADA}`;
+    }
+
+    // Next try to use ministry URL if available
+    if (investment.reference?.ministryUrl) {
+        // Create a shorter ID by hashing the URL
+        const urlHash = hashString(investment.reference.ministryUrl);
+        return `url:${urlHash}`;
+    }
+
+    // As a fallback, create a hash from the name, beneficiary, and amount
+    const hashInput = `${investment.name}|${investment.beneficiary}|${investment.totalAmount}`;
+    return `hash:${hashString(hashInput)}`;
+};
+
+/**
+ * Parse an investment ID into its components
+ * @param id The investment ID string
+ * @returns Object with type and value
+ */
+export const parseInvestmentId = (id: string): { type: string, value: string } => {
+    const parts = id.split(':');
+    if (parts.length === 2) {
+        return {
+            type: parts[0],
+            value: parts[1]
+        };
+    }
+    return { type: 'unknown', value: id };
+};
+
+/**
+ * Find an investment by ID
+ * @param id The investment ID
+ * @param investments Array of investments to search
+ * @returns The matching investment or undefined
+ */
+export const findInvestmentById = (id: string, investments: Investment[]): Investment | undefined => {
+    const { type, value } = parseInvestmentId(id);
+
+    switch (type) {
+        case 'ada':
+            return investments.find(inv => inv.reference?.diavgeiaADA === value);
+
+        case 'url':
+            // Find by URL hash
+            return investments.find(inv => {
+                if (!inv.reference?.ministryUrl) return false;
+                const urlHash = hashString(inv.reference.ministryUrl);
+                return urlHash === value;
+            });
+
+        case 'hash':
+            // Find by combined hash
+            return investments.find(inv => {
+                const hashInput = `${inv.name}|${inv.beneficiary}|${inv.totalAmount}`;
+                return hashString(hashInput) === value;
+            });
+
+        default:
+            return undefined;
+    }
+};
+
+/**
+ * Create a link to an investment detail view
+ * @param investment The investment object
+ * @returns URL hash for linking to the investment
+ */
+export const createInvestmentLink = (investment: Investment): string => {
+    const id = getInvestmentId(investment);
+    return `#/table/investment/${encodeURIComponent(id)}`;
+};
+
+/**
+ * Simple string hashing function
+ * @param str String to hash
+ * @returns A string hash
+ */
+function hashString(str: string): string {
+    let hash = 0;
+    if (str.length === 0) return hash.toString();
+
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+
+    // Make hash positive and convert to base36 for shorter strings
+    return Math.abs(hash).toString(36);
+} 

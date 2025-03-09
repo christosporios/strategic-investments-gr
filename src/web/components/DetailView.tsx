@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Investment } from '../../types';
+import { Investment, Location, FundingSource, Incentive } from '../../types';
 import { Category, CategoryColors, DEFAULT_CATEGORY_COLOR } from '../../types/constants';
 import IncentiveTag from './IncentiveTag';
 import { createDiavgeiaURL } from './TableUtils';
@@ -254,6 +254,20 @@ const DetailView: React.FC<DetailViewProps> = ({ investment }) => {
                                     className="text-blue-600 hover:text-blue-800"
                                 >
                                     {investment.reference.diavgeiaADA}
+                                </a>
+                            </div>
+                        )}
+
+                        {investment.reference?.ministryUrl && !investment.reference?.diavgeiaADA && (
+                            <div>
+                                <h4 className="text-sm font-medium text-gray-500">Πηγή</h4>
+                                <a
+                                    href={investment.reference.ministryUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:text-blue-800"
+                                >
+                                    Υπουργείο Ανάπτυξης
                                 </a>
                             </div>
                         )}

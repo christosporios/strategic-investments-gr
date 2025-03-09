@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Investment } from '../../types';
 import InvestmentTable from './InvestmentTable';
-import { convertToCSV, downloadCSV } from './TableUtils';
+import { convertToCSV, downloadCSV, findInvestmentById, parseInvestmentId } from './TableUtils';
 
 interface TableViewProps {
     investments: Investment[];
@@ -16,9 +16,17 @@ const TableView: React.FC<TableViewProps> = ({ investments, totalAmount }) => {
         const handleHashChange = () => {
             const hash = window.location.hash;
             if (hash.startsWith('#/table/investment/')) {
-                const ada = decodeURIComponent(hash.replace('#/table/investment/', ''));
-                const investment = investments.find(inv => inv.reference?.diavgeiaADA === ada);
+                const encodedId = hash.replace('#/table/investment/', '');
+                const id = decodeURIComponent(encodedId);
+
+                // Use the new findInvestmentById utility
+                const investment = findInvestmentById(id, investments);
+
                 setSelectedInvestment(investment || null);
+
+                if (!investment) {
+                    console.warn(`Investment with ID ${id} not found`);
+                }
             } else {
                 setSelectedInvestment(null);
             }

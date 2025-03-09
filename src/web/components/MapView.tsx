@@ -5,6 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import DateRangeFilter from './DateRangeFilter';
 import CategoryFilter from './CategoryFilter';
 import { Category, CategoryColors, DEFAULT_CATEGORY_COLOR } from '../../types/constants.js';
+import { createInvestmentLink } from './TableUtils';
 
 // Set Mapbox token
 mapboxgl.accessToken = 'pk.eyJ1IjoiY2hyaXN0b3Nwb3Jpb3MiLCJhIjoiY204MXJpejN0MDRzbzJrcXZzbXRzbDdoYiJ9.kEGfS3xl4_kqFEEkQrxGNA';
@@ -177,33 +178,61 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
 
             investment.locations.forEach(location => {
                 if (location.lat && location.lon) {
-                    // Create a permalink to the investment details in the table view with proper URL encoding
-                    const ada = investment.reference?.diavgeiaADA || '';
-                    const investmentLink = `#/table/investment/${encodeURIComponent(ada)}`;
+                    // Use the new universal ID function to create a permalink
+                    const investmentLink = createInvestmentLink(investment);
 
                     // Create a popup with investment info and a permalink button
-                    const popup = new mapboxgl.Popup({ offset: 0 }).setHTML(`
-                        <div class="p-3">
-                            <h3 class="font-bold text-base mb-1">${investment.name}</h3>
-                            <p class="text-sm">${location.description}</p>
-                            ${totalValidLocations > 1 ?
-                            `<p class="text-xs text-gray-500">(Τοποθεσία ${validLocationIndex + 1} από ${totalValidLocations})</p>` :
-                            ''}
-                            <div class="mt-3 pt-2 border-t border-gray-200 flex justify-between">
-                                <span class="text-sm font-semibold">€${investment.totalAmount?.toLocaleString('el-GR') || 'N/A'}</span>
-                                <span class="text-xs text-gray-500">${investment.dateApproved || 'N/A'}</span>
+                    const popup = new mapboxgl.Popup({
+                        offset: 0,
+                        closeButton: true,
+                        closeOnClick: false,
+                        maxWidth: '300px'
+                    }).setHTML(`
+                        <div class="popup-container">
+                            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
+                                <h3 class="font-bold text-lg text-gray-900">${investment.name}</h3>
+                                <p class="text-sm text-gray-600 mt-1">${location.description || 'Τουριστικό συγκρότημα'}</p>
+                                ${totalValidLocations > 1 ?
+                            `<span class="inline-block px-2 py-0.5 mt-1 bg-gray-200 text-gray-700 text-xs rounded-full">
+                                    Τοποθεσία ${validLocationIndex + 1} από ${totalValidLocations}
+                                </span>` : ''}
                             </div>
-                            <div class="mt-2 text-center">
-                                <a 
-                                    href="${investmentLink}" 
-                                    class="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
-                                        <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-                                        <line x1="8" y1="12" x2="16" y2="12"></line>
-                                    </svg>
-                                    Δείτε λεπτομέρειες
-                                </a>
+                            
+                            <div class="p-4">
+                                <div class="flex justify-between items-center">
+                                    <div class="text-lg font-bold text-gray-900">€${investment.totalAmount?.toLocaleString('el-GR') || 'N/A'}</div>
+                                    <div class="text-sm text-gray-500">${investment.dateApproved || 'N/A'}</div>
+                                </div>
+                                
+                                ${investment.incentivesApproved && investment.incentivesApproved.length > 0 ?
+                            `<div class="mt-3 pt-3 border-t border-gray-100">
+                                    <div class="text-xs text-gray-500 mb-1.5">Κίνητρα</div>
+                                    <div class="flex flex-wrap gap-1">
+                                        ${investment.incentivesApproved.slice(0, 3).map(incentive =>
+                                `<span class="inline-block px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">
+                                                ${incentive.name}
+                                            </span>`
+                            ).join('')}
+                                        ${investment.incentivesApproved.length > 3 ?
+                                `<span class="inline-block px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">
+                                                +${investment.incentivesApproved.length - 3}
+                                            </span>` : ''}
+                                    </div>
+                                </div>` : ''}
+                                
+                                <div class="mt-4 pt-3 border-t border-gray-100 flex justify-center">
+                                    <a 
+                                        href="${investmentLink}" 
+                                        class="flex items-center justify-center gap-2 px-3 py-2 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors text-sm font-medium"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                            <polyline points="15 3 21 3 21 9"></polyline>
+                                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                                        </svg>
+                                        Δείτε λεπτομέρειες
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     `);
@@ -299,7 +328,7 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
             )}
 
             {/* Combined info panel, category filter, and date filter */}
-            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-xl px-4">
+            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-5 w-full max-w-xl px-4">
                 <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md overflow-hidden">
                     {/* Info section */}
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200/50">
