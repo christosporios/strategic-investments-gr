@@ -23,6 +23,7 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
     const [selectedCategories, setSelectedCategories] = useState<Category[]>(Object.values(Category));
     const [showUncategorized, setShowUncategorized] = useState<boolean>(true);
     const [dateRange, setDateRange] = useState<{ startDate: string; endDate: string } | null>(null);
+    const [webGLSupported, setWebGLSupported] = useState<boolean | null>(null);
 
     // Apply all filters together
     const applyAllFilters = () => {
@@ -170,7 +171,16 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
         markersRef.current.forEach(marker => marker.remove());
         markersRef.current = [];
 
-        // Add new markers
+        // Get current map state
+        const currentZoom = map.current.getZoom();
+        const currentBearing = map.current.getBearing();
+        const currentPitch = map.current.getPitch();
+
+        // Add new markers - adjust based on current viewport state
+        const geolocatedInvestments = filteredInvestments.filter(inv =>
+            inv.locations && inv.locations.some(loc => loc.lat && loc.lon)
+        );
+
         geolocatedInvestments.forEach(investment => {
             // Count valid locations for this investment (those with lat/lon)
             const totalValidLocations = investment.locations.filter(loc => loc.lat && loc.lon).length;
@@ -178,12 +188,26 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
 
             investment.locations.forEach(location => {
                 if (location.lat && location.lon) {
-                    // Use the new universal ID function to create a permalink
+                    // Create marker element
+                    const totalAmount = investment.totalAmount || 0;
+                    const el = createMarkerElement(investment, totalAmount, validLocationIndex, totalValidLocations);
+
+                    // Create and add the marker with correct position
+                    const marker = new mapboxgl.Marker({
+                        element: el,
+                        anchor: 'bottom', // Anchor point at bottom of marker
+                        rotationAlignment: 'map', // Keep alignment with map rotation
+                        pitchAlignment: 'map'  // Keep alignment with map pitch
+                    })
+                        .setLngLat([location.lon, location.lat])
+                        .addTo(map.current!);
+
+                    // Use the universal ID function to create a permalink
                     const investmentLink = createInvestmentLink(investment);
 
                     // Create a popup with investment info and a permalink button
                     const popup = new mapboxgl.Popup({
-                        offset: 0,
+                        offset: 25, // Offset to account for bottom anchor
                         closeButton: true,
                         closeOnClick: false,
                         maxWidth: '300px'
@@ -210,13 +234,13 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
                                     <div class="flex flex-wrap gap-1">
                                         ${investment.incentivesApproved.slice(0, 3).map(incentive =>
                                 `<span class="inline-block px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">
-                                                ${incentive.name}
-                                            </span>`
+                                        ${incentive.name}
+                                    </span>`
                             ).join('')}
                                         ${investment.incentivesApproved.length > 3 ?
                                 `<span class="inline-block px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">
-                                                +${investment.incentivesApproved.length - 3}
-                                            </span>` : ''}
+                                        +${investment.incentivesApproved.length - 3}
+                                    </span>` : ''}
                                     </div>
                                 </div>` : ''}
                                 
@@ -237,14 +261,7 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
                         </div>
                     `);
 
-                    // Create a custom marker
-                    const marker = new mapboxgl.Marker({
-                        element: createMarkerElement(investment, investment.totalAmount || 0, validLocationIndex, totalValidLocations),
-                        anchor: 'center'
-                    })
-                        .setLngLat([location.lon, location.lat])
-                        .setPopup(popup)
-                        .addTo(map.current!);
+                    marker.setPopup(popup);
 
                     markersRef.current.push(marker);
 
@@ -277,12 +294,23 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
     useEffect(() => {
         if (!mapContainer.current) return;
 
+        // Check if WebGL is supported before initializing the map
+        if (!mapboxgl.supported()) {
+            setWebGLSupported(false);
+            setLoading(false);
+            return;
+        }
+
+        setWebGLSupported(true);
+
         map.current = new mapboxgl.Map({
             container: mapContainer.current,
             style: 'mapbox://styles/mapbox/light-v11',
             center: [23.7275, 37.9838], // Athens coordinates as default center
             zoom: 6,
-            attributionControl: false
+            attributionControl: false,
+            failIfMajorPerformanceCaveat: false, // Allow map to render even with performance issues
+            trackResize: true // Ensure the map tracks container resizes
         });
 
         // Add attribution only (removed navigation controls)
@@ -292,10 +320,33 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
         map.current.on('load', () => {
             setLoading(false);
             addMarkersToMap();
+
+            // Add event listeners for viewport changes that might affect marker positions
+            map.current?.on('rotate', () => {
+                // Remove and re-add markers to ensure correct positioning after rotation
+                addMarkersToMap();
+            });
+
+            map.current?.on('pitch', () => {
+                // Remove and re-add markers to ensure correct positioning after pitch change
+                addMarkersToMap();
+            });
+
+            // Handle resize events more actively for mobile rotations
+            window.addEventListener('resize', () => {
+                if (map.current) {
+                    map.current.resize();
+                    // Brief timeout to let the resize complete before repositioning markers
+                    setTimeout(() => addMarkersToMap(), 100);
+                }
+            });
         });
 
         // Cleanup function
         return () => {
+            window.removeEventListener('resize', () => {
+                if (map.current) map.current.resize();
+            });
             if (map.current) {
                 map.current.remove();
                 map.current = null;
@@ -318,11 +369,32 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
             {/* Map container */}
             <div ref={mapContainer} className="w-full h-full absolute inset-0 z-0"></div>
 
-            {loading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 z-20">
+            {/* Loading state */}
+            {loading && webGLSupported !== false && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
                     <div className="text-center">
-                        <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                        <p className="text-gray-600">Φόρτωση χάρτη...</p>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                        <p className="mt-3 text-gray-700">Loading map...</p>
+                    </div>
+                </div>
+            )}
+
+            {/* WebGL not supported message */}
+            {webGLSupported === false && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white z-10 p-6">
+                    <div className="max-w-md text-center bg-white rounded-lg shadow-md p-6">
+                        <h3 className="text-xl font-bold text-red-600 mb-3">Map Not Available</h3>
+                        <p className="text-gray-700 mb-4">
+                            Your browser or device doesn't support WebGL, which is required to display the map.
+                        </p>
+                        <div className="text-sm text-gray-500 mt-3">
+                            <p>Suggestions:</p>
+                            <ul className="list-disc list-inside mt-2 text-left">
+                                <li>Try using a different browser (Chrome or Safari)</li>
+                                <li>Check if hardware acceleration is enabled in your browser settings</li>
+                                <li>Try using a desktop computer or a newer mobile device</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             )}
