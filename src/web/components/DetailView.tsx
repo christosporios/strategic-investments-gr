@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Investment, Location, FundingSource, Incentive } from '../../types';
 import { Category, CategoryColors, DEFAULT_CATEGORY_COLOR } from '../../types/constants';
 import IncentiveTag from './IncentiveTag';
-import { createDiavgeiaURL } from './TableUtils';
+import { createDiavgeiaURL, formatDate } from './TableUtils';
 
 interface DetailViewProps {
     investment: Investment;
@@ -87,7 +87,7 @@ const DetailView: React.FC<DetailViewProps> = ({ investment }) => {
 
                             <div>
                                 <h4 className="text-sm font-medium text-gray-500">Ημερομηνία Έγκρισης</h4>
-                                <p className="text-base text-gray-900">{investment.dateApproved || 'Μη διαθέσιμη'}</p>
+                                <p className="text-base text-gray-900">{formatDate(investment.dateApproved)}</p>
                             </div>
                         </div>
 

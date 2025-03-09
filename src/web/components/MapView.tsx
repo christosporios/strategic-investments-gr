@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import DateRangeFilter from './DateRangeFilter';
 import CategoryFilter from './CategoryFilter';
 import { Category, CategoryColors, DEFAULT_CATEGORY_COLOR } from '../../types/constants.js';
-import { createInvestmentLink } from './TableUtils';
+import { createInvestmentLink, formatDate } from './TableUtils';
 
 // Set Mapbox token
 mapboxgl.accessToken = 'pk.eyJ1IjoiY2hyaXN0b3Nwb3Jpb3MiLCJhIjoiY204MXJpejN0MDRzbzJrcXZzbXRzbDdoYiJ9.kEGfS3xl4_kqFEEkQrxGNA';
@@ -201,7 +201,7 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
                             <div class="p-4">
                                 <div class="flex justify-between items-center">
                                     <div class="text-lg font-bold text-gray-900">€${investment.totalAmount?.toLocaleString('el-GR') || 'N/A'}</div>
-                                    <div class="text-sm text-gray-500">${investment.dateApproved || 'N/A'}</div>
+                                    <div class="text-sm text-gray-500">${formatDate(investment.dateApproved)}</div>
                                 </div>
                                 
                                 ${investment.incentivesApproved && investment.incentivesApproved.length > 0 ?
