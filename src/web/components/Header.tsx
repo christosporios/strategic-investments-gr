@@ -59,8 +59,8 @@ const Header: React.FC<HeaderProps> = ({
     };
 
     return (
-        <div className="sticky top-4 z-50 mx-2 md:mx-6">
-            <div className="bg-white/80 backdrop-blur-md border border-gray-200 shadow-md rounded-lg">
+        <div className="sticky top-0 z-50 mx-0 md:mx-6 md:top-4">
+            <div className="bg-white/90 backdrop-blur-md border border-gray-200 shadow-md rounded-none md:rounded-lg">
                 <div className="container mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between px-2 py-2 md:py-0 md:h-16 md:px-6">
                     <h1 className="text-sm md:text-base lg:text-xl font-semibold leading-tight text-center md:text-left py-2 md:py-0">
                         <span className="whitespace-nowrap">{totalInvestments} στρατηγικές επενδύσεις</span>

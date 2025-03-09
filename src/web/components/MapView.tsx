@@ -303,55 +303,63 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
 
         setWebGLSupported(true);
 
-        map.current = new mapboxgl.Map({
-            container: mapContainer.current,
-            style: 'mapbox://styles/mapbox/light-v11',
-            center: [23.7275, 37.9838], // Athens coordinates as default center
-            zoom: 6,
-            attributionControl: false,
-            failIfMajorPerformanceCaveat: false, // Allow map to render even with performance issues
-            trackResize: true // Ensure the map tracks container resizes
-        });
+        // On Android, we need to give the browser a moment to calculate viewport dimensions
+        setTimeout(() => {
+            if (!mapContainer.current) return;
 
-        // Add attribution only (removed navigation controls)
-        map.current.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-right');
-
-        // Setup map
-        map.current.on('load', () => {
-            setLoading(false);
-            addMarkersToMap();
-
-            // Add event listeners for viewport changes that might affect marker positions
-            map.current?.on('rotate', () => {
-                // Remove and re-add markers to ensure correct positioning after rotation
-                addMarkersToMap();
+            map.current = new mapboxgl.Map({
+                container: mapContainer.current,
+                style: 'mapbox://styles/mapbox/light-v11',
+                center: [23.7275, 37.9838], // Athens coordinates as default center
+                zoom: 6,
+                attributionControl: false,
+                failIfMajorPerformanceCaveat: false, // Allow map to render even with performance issues
+                trackResize: true, // Ensure the map tracks container resizes
             });
 
-            map.current?.on('pitch', () => {
-                // Remove and re-add markers to ensure correct positioning after pitch change
-                addMarkersToMap();
-            });
+            // Add attribution only (removed navigation controls)
+            map.current.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-right');
 
-            // Handle resize events more actively for mobile rotations
-            window.addEventListener('resize', () => {
-                if (map.current) {
-                    map.current.resize();
-                    // Brief timeout to let the resize complete before repositioning markers
-                    setTimeout(() => addMarkersToMap(), 100);
-                }
-            });
-        });
-
-        // Cleanup function
-        return () => {
-            window.removeEventListener('resize', () => {
+            // Setup map
+            map.current.on('load', () => {
+                // Force a resize to ensure the map takes correct dimensions
                 if (map.current) map.current.resize();
+
+                setLoading(false);
+                addMarkersToMap();
+
+                // Add event listeners for viewport changes that might affect marker positions
+                map.current?.on('rotate', () => {
+                    // Remove and re-add markers to ensure correct positioning after rotation
+                    addMarkersToMap();
+                });
+
+                map.current?.on('pitch', () => {
+                    // Remove and re-add markers to ensure correct positioning after pitch change
+                    addMarkersToMap();
+                });
+
+                // Handle resize events more actively for mobile rotations
+                window.addEventListener('resize', () => {
+                    if (map.current) {
+                        map.current.resize();
+                        // Brief timeout to let the resize complete before repositioning markers
+                        setTimeout(() => addMarkersToMap(), 100);
+                    }
+                });
             });
-            if (map.current) {
-                map.current.remove();
-                map.current = null;
-            }
-        };
+
+            // Cleanup function
+            return () => {
+                window.removeEventListener('resize', () => {
+                    if (map.current) map.current.resize();
+                });
+                if (map.current) {
+                    map.current.remove();
+                    map.current = null;
+                }
+            };
+        }, 100); // Small delay to allow viewport to settle
     }, []);
 
     // Update markers when filtered investments change
@@ -365,9 +373,9 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
     }, [selectedCategories, showUncategorized, dateRange]);
 
     return (
-        <div className="relative w-full h-full">
-            {/* Map container */}
-            <div ref={mapContainer} className="w-full h-full absolute inset-0 z-0"></div>
+        <div className="relative w-full h-full flex-1" style={{ zIndex: 0 }}>
+            {/* Map container - Increased z-index to be above header on mobile */}
+            <div ref={mapContainer} className="w-full h-full absolute inset-0" style={{ zIndex: 1 }}></div>
 
             {/* Loading state */}
             {loading && webGLSupported !== false && (

@@ -191,6 +191,24 @@
     min-height: -webkit-fill-available;
     position: relative;
   }
+
+  /* Fix for Android map view display */
+  [data-value="map"] {
+    height: 100vh !important; 
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 0 !important;
+  }
+
+  /* Fix header on map view for Android */
+  .sticky {
+    position: fixed;
+    width: 100%;
+    z-index: 100 !important;
+  }
 }
 
 /* Make sure the map container takes full height */

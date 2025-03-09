@@ -112,8 +112,8 @@ const App: React.FC = () => {
         : 'container mx-auto pt-24 pb-6 px-4 w-full';
 
     return (
-        <div className="min-h-screen bg-gray-50 relative overflow-x-hidden">
-            {/* Sticky Header */}
+        <div className="min-h-screen bg-gray-50 relative">
+            {/* Sticky Header - Increased z-index to be above map on mobile */}
             <Header
                 totalInvestments={Array.isArray(investments) ? investments.length : 0}
                 totalAmount={totalAmount}
@@ -121,10 +121,10 @@ const App: React.FC = () => {
                 onViewChange={setActiveView}
             />
 
-            <div className={containerClass}>
+            <div className={containerClass} style={{ paddingTop: activeView === 'map' ? '0' : undefined }}>
                 {/* Content based on active view */}
                 <Tabs value={activeView} onValueChange={setActiveView} className={activeView === 'map' ? 'h-full' : ''}>
-                    <TabsContent value="map" className="h-full">
+                    <TabsContent value="map" className="h-full relative" style={{ top: 0, bottom: 0 }}>
                         <MapView investments={investments} />
                     </TabsContent>
 
