@@ -14,7 +14,7 @@ import { Investment, Incentive } from '../../types';
 import { Category, CategoryColors, DEFAULT_CATEGORY_COLOR } from '../../types/constants';
 import IncentiveTag from './IncentiveTag';
 import DetailView from './DetailView';
-import { greekFuzzyFilter, getInvestmentId } from './TableUtils';
+import { greekFuzzyFilter, getInvestmentId, formatDate } from './TableUtils';
 
 interface InvestmentTableProps {
     investments: Investment[];
@@ -189,7 +189,7 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({
         }),
         columnHelper.accessor('dateApproved', {
             header: 'Ημερομηνία',
-            cell: info => info.getValue() || '-',
+            cell: info => formatDate(info.getValue()),
             footer: info => info.column.id,
         }),
         columnHelper.accessor('category', {
@@ -393,7 +393,7 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({
                                 <div className="mt-2 flex justify-between items-center">
                                     <div>
                                         <div className="text-sm text-gray-500">Ημερομηνία</div>
-                                        <div className="text-sm">{investment.dateApproved || '-'}</div>
+                                        <div className="text-sm">{formatDate(investment.dateApproved)}</div>
                                     </div>
 
                                     <div>

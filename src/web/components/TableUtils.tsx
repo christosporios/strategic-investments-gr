@@ -257,4 +257,30 @@ function hashString(str: string): string {
 
     // Make hash positive and convert to base36 for shorter strings
     return Math.abs(hash).toString(36);
-} 
+}
+
+/**
+ * Format a date string in Greek locale format
+ * @param dateStr ISO date string (YYYY-MM-DD)
+ * @returns Formatted date string in Greek locale (DD/MM/YYYY)
+ */
+export const formatDate = (dateStr: string | undefined): string => {
+    if (!dateStr) return '-';
+
+    try {
+        const date = new Date(dateStr);
+
+        // Check if date is valid
+        if (isNaN(date.getTime())) return dateStr;
+
+        // Format the date in Greek locale
+        return date.toLocaleDateString('el-GR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    } catch (e) {
+        // If any error occurs parsing the date, return the original string
+        return dateStr;
+    }
+}; 
