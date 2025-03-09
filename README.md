@@ -176,8 +176,15 @@ strategic-investments/
 │       ├── index.tsx       # React entry point
 │       └── styles.css      # CSS styles
 ├── .gitignore              # Git ignore file
+├── LICENSE                 # MIT license file
 ├── package.json            # NPM package configuration
 ├── tsconfig.json           # TypeScript configuration for data collection
 ├── tsconfig.web.json       # TypeScript configuration for web app
 └── webpack.config.mjs      # Webpack configuration
 ```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+Copyright (c) 2023-2024 Schema Labs
