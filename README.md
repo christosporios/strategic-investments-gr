@@ -39,7 +39,48 @@ npm run collect
 npm run collect:period --startDate=2022-01-01 --endDate=2022-12-31
 ```
 
+For real data collection using the Diavgeia API and Claude's AI to process documents, you need to provide an Anthropic API key. You can do this in two ways:
+
+### 1. Using a .env file (recommended)
+
+Create a `.env` file in the root directory with your API key:
+
+```
+ANTHROPIC_API_KEY=your_anthropic_api_key
+```
+
+Then run the collection scripts without the apiKey parameter:
+
+```bash
+# Run with .env API key
+npm run collect
+
+# Run with date range and .env API key
+npm run collect:period --startDate=2022-01-01 --endDate=2022-12-31
+```
+
+### 2. Using command-line parameters
+
+```bash
+# Run with API key as parameter
+npm run collect:with-api --apiKey=your_anthropic_api_key
+
+# Run with date range and API key
+npm run collect:period:with-api --startDate=2022-01-01 --endDate=2022-12-31 --apiKey=your_anthropic_api_key
+```
+
 The collected data will be saved to `data/investments.json`.
+
+## How Real Data Collection Works
+
+When running with an API key, the script:
+
+1. Queries the Diavgeia API for strategic investments documents
+2. Uses Claude AI to filter only the documents related to "Έγκριση χορήγησης κινήτρων"
+3. Processes each filtered document to extract structured data
+4. Saves the extracted data in the format defined in our schema
+
+Without an API key, sample data will be generated instead.
 
 ## Visualization App
 

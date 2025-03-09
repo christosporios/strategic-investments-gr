@@ -23,6 +23,7 @@ export interface Incentive {
 export interface Reference {
     fek: string;
     diavgeiaADA: string;
+    revisesADA?: string;
 }
 
 export interface Investment {

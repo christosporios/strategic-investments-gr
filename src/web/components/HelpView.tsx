@@ -1,0 +1,199 @@
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
+import { ExternalLink, AlertCircle, Clock } from 'lucide-react';
+
+interface HelpViewProps {
+    metadata: {
+        generatedAt?: string;
+        totalInvestments?: number;
+        revisionsExcluded?: Array<{
+            original: string;
+            replacedBy: string;
+        }>;
+    } | null;
+}
+
+const HelpView: React.FC<HelpViewProps> = ({ metadata }) => {
+    // Format the data generation date if available
+    const formattedDate = metadata?.generatedAt
+        ? new Date(metadata.generatedAt).toLocaleDateString('el-GR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+        : null;
+
+    return (
+        <div className="space-y-6 mb-10">
+            {/* Data Freshness Alert */}
+            {formattedDate && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md mb-6">
+                    <div className="flex items-start">
+                        <div className="flex-shrink-0">
+                            <Clock className="h-5 w-5 text-yellow-600" />
+                        </div>
+                        <div className="ml-3">
+                            <h3 className="text-sm font-medium text-yellow-800">
+                                Τελευταία ενημέρωση δεδομένων
+                            </h3>
+                            <div className="mt-1 text-sm text-yellow-700">
+                                <p>
+                                    Τα δεδομένα που εμφανίζονται σε αυτή την εφαρμογή έχουν ενημερωθεί στις {formattedDate}.
+                                    {metadata?.totalInvestments && (
+                                        <span className="block mt-1">
+                                            Συνολικός αριθμός επενδύσεων: <strong>{metadata.totalInvestments}</strong>
+                                        </span>
+                                    )}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Σχετικά με την εφαρμογή</CardTitle>
+                    <CardDescription>Πληροφορίες για τη χρήση και το περιεχόμενο της εφαρμογής</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p className="mb-4">
+                        Αυτή η εφαρμογή παρουσιάζει δεδομένα για τις στρατηγικές επενδύσεις που
+                        έχουν εγκριθεί από την ελληνική κυβέρνηση. Το περιεχόμενο της εφαρμογής είναι οργανωμένο
+                        σε διαφορετικές προβολές:
+                    </p>
+
+                    <div className="space-y-4">
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">📍 Χάρτης</h3>
+                            <p className="text-gray-500">
+                                Οπτικοποίηση της γεωγραφικής κατανομής των επενδύσεων σε χάρτη της Ελλάδας
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">📊 Πίνακας</h3>
+                            <p className="text-gray-500">
+                                Αναλυτικός πίνακας με όλες τις επενδύσεις και τα κύρια στοιχεία τους.
+                                Με δυνατότητα αναζήτησης, επέκτασης για λεπτομέρειες, και εξαγωγής σε CSV.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">❓ Βοήθεια</h3>
+                            <p className="text-gray-500">
+                                Η τρέχουσα προβολή που περιέχει πληροφορίες και οδηγίες χρήσης
+                            </p>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Μεθοδολογία Συλλογής Δεδομένων</CardTitle>
+                    <CardDescription>Πώς συλλέγονται τα δεδομένα των επενδύσεων</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p className="mb-4">
+                        Η διαδικασία συλλογής και επεξεργασίας των δεδομένων για τις στρατηγικές επενδύσεις περιλαμβάνει:
+                    </p>
+
+                    <div className="space-y-4">
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">1. Αναζήτηση στη Διαύγεια</h3>
+                            <p className="text-gray-500">
+                                Πραγματοποιείται αναζήτηση στο Πρόγραμμα Διαύγεια για τις αποφάσεις του Υπουργείου Ανάπτυξης σχετικά με τις στρατηγικές επενδύσεις:
+                            </p>
+                            <ul className="list-disc pl-6 mt-2 space-y-1 text-gray-500 text-sm">
+                                <li>Αποφάσεις από τον συγκεκριμένο φορέα (organizationUid:100081597 - Υπουργείο Ανάπτυξης)</li>
+                                <li>Αποφάσεις από τη συγκεκριμένη μονάδα (unitUid:100007316 - Μονάδα Στρατηγικών Επενδύσεων)</li>
+                                <li>Δυνατότητα περιορισμού χρονικού διαστήματος αναζήτησης (προεπιλογή τελευταία 10 έτη)</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">2. Φιλτράρισμα & Επεξεργασία</h3>
+                            <p className="text-gray-500">
+                                Τα δεδομένα υποβάλλονται σε επεξεργασία για να εντοπιστούν οι σχετικές αποφάσεις:
+                            </p>
+                            <ul className="list-disc pl-6 mt-2 space-y-1 text-gray-500 text-sm">
+                                <li>Αναγνώριση και ομαδοποίηση αναθεωρήσεων και διορθώσεων αποφάσεων (τροποποιήσεις, ορθές επαναλήψεις, κλπ.)</li>
+                                <li>Φιλτράρισμα για εντοπισμό μόνο των αποφάσεων που αφορούν έγκριση χορήγησης κινήτρων για στρατηγικές επενδύσεις</li>
+                                <li>Αποφυγή διπλής καταμέτρησης επενδύσεων με διατήρηση μόνο των πιο πρόσφατων εκδόσεων των αποφάσεων</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">3. Εξαγωγή Δεδομένων</h3>
+                            <p className="text-gray-500">
+                                Από κάθε έγγραφο εξάγεται με αυτοματοποιημένο τρόπο δομημένη πληροφορία:
+                            </p>
+                            <ul className="list-disc pl-6 mt-2 space-y-1 text-gray-500 text-sm">
+                                <li>Όνομα επένδυσης, δικαιούχος και ημερομηνία έγκρισης</li>
+                                <li>Συνολικό ποσό επένδυσης και ανάλυση προϋπολογισμού</li>
+                                <li>Τοποθεσίες υλοποίησης της επένδυσης</li>
+                                <li>Πηγές χρηματοδότησης και εγκεκριμένα κίνητρα</li>
+                                <li>Στοιχεία αναφοράς (ΑΔΑ Διαύγειας, ΦΕΚ)</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">4. Εμπλουτισμός Δεδομένων</h3>
+                            <p className="text-gray-500">
+                                Τα εξαγόμενα δεδομένα εμπλουτίζονται με γεωχωρικές πληροφορίες:
+                            </p>
+                            <ul className="list-disc pl-6 mt-2 space-y-1 text-gray-500 text-sm">
+                                <li>Γεωκωδικοποίηση τοποθεσιών με συντεταγμένες για την απεικόνιση στον χάρτη</li>
+                                <li>Έλεγχος ποιότητας και ορθότητας των εξαγόμενων δεδομένων</li>
+                            </ul>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Σχετικά με το έργο</CardTitle>
+                    <CardDescription>Οι δημιουργοί και η ομάδα πίσω από την εφαρμογή</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p className="mb-4">
+                        Αυτή η εφαρμογή αναπτύχθηκε από την
+                        <a
+                            href="https://schemalabs.gr"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline font-medium mx-1 inline-flex items-center"
+                        >
+                            Schema Labs
+                            <ExternalLink className="h-3.5 w-3.5 ml-1" />
+                        </a>.
+                    </p>
+
+                    <div className="my-4 bg-blue-50 border border-blue-200 rounded-md p-4">
+                        <h3 className="font-semibold text-blue-800 mb-2">Πηγή δεδομένων</h3>
+                        <p className="text-blue-700 text-sm">
+                            Τα δεδομένα που παρουσιάζονται στην εφαρμογή προέρχονται αποκλειστικά από το
+                            <a
+                                href="https://diavgeia.gov.gr/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline font-medium mx-1 inline-flex items-center"
+                            >
+                                Πρόγραμμα Διαύγεια
+                                <ExternalLink className="h-3.5 w-3.5 ml-1" />
+                            </a>
+                            και συγκεκριμένα από τις αποφάσεις έγκρισης χορήγησης κινήτρων για στρατηγικές επενδύσεις της Μονάδας Στρατηγικών Επενδύσεων του Υπουργείου Ανάπτυξης.
+                        </p>
+                    </div>
+
+                </CardContent>
+            </Card>
+        </div>
+    );
+};
+
+export default HelpView; 

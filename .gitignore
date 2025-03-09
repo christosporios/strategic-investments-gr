@@ -19,6 +19,8 @@ build/
 *.swp
 *.swo
 .DS_Store
+
+# Environment variables
 .env
 .env.local
 .env.development
