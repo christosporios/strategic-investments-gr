@@ -109,10 +109,10 @@ const App: React.FC = () => {
     // Special class for map view to remove padding and take full screen
     const containerClass = activeView === 'map'
         ? 'absolute inset-0 w-full h-full'
-        : 'container mx-auto pt-24 pb-6 px-4';
+        : 'container mx-auto pt-24 pb-6 px-4 w-full';
 
     return (
-        <div className="min-h-screen bg-gray-50 relative">
+        <div className="min-h-screen bg-gray-50 relative overflow-x-hidden">
             {/* Sticky Header */}
             <Header
                 totalInvestments={Array.isArray(investments) ? investments.length : 0}
@@ -128,14 +128,14 @@ const App: React.FC = () => {
                         <MapView investments={investments} />
                     </TabsContent>
 
-                    <TabsContent value="table">
+                    <TabsContent value="table" className="w-full overflow-x-hidden">
                         <TableView
                             investments={investments}
                             totalAmount={totalAmount}
                         />
                     </TabsContent>
 
-                    <TabsContent value="help">
+                    <TabsContent value="help" className="w-full overflow-x-hidden">
                         <HelpView metadata={metadata} />
                     </TabsContent>
                 </Tabs>

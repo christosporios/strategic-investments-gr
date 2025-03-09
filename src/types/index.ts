@@ -45,4 +45,5 @@ export interface Investment {
 export interface CollectDataParams {
     startDate?: string;
     endDate?: string;
+    ignoreExisting?: boolean;
 } 

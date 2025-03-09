@@ -114,6 +114,13 @@
 }
 
 @layer base {
+  html, body {
+    height: auto;
+    min-height: 100%;
+    width: 100%;
+    position: relative;
+    overflow-x: hidden;
+  }
   * {
     @apply border-border outline-ring/50;
   }
@@ -147,6 +154,26 @@
   margin: 1rem;
   max-width: 300px;
   pointer-events: auto;
+}
+
+/* Responsive fixes */
+@media screen and (max-width: 768px) {
+  html, body {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  
+  .min-h-screen {
+    min-height: 100vh; /* Use vh instead of % for mobile viewport */
+    min-height: -webkit-fill-available; /* For iOS Safari */
+  }
+  
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    position: relative;
+  }
 }
 
 /* Make sure the map container takes full height */

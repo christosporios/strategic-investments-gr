@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { Investment, CollectDataParams } from '../types/index.js';
@@ -20,7 +20,9 @@ const __dirname = path.dirname(__filename);
 // Parse command line arguments
 const parseArgs = (): CollectDataParams => {
     const args = process.argv.slice(2);
-    const params: CollectDataParams = {};
+    const params: CollectDataParams = {
+        ignoreExisting: false
+    };
 
     for (let i = 0; i < args.length; i++) {
         if (args[i] === '--startDate' && i + 1 < args.length) {
@@ -37,6 +39,8 @@ const parseArgs = (): CollectDataParams => {
                 console.log('Using ANTHROPIC_API_KEY from .env file instead of command line argument');
             }
             i++;
+        } else if (args[i] === '--ignore-existing') {
+            params.ignoreExisting = true;
         }
     }
 
@@ -44,11 +48,32 @@ const parseArgs = (): CollectDataParams => {
 };
 
 /**
+ * Load existing investment data from the JSON file
+ * @returns Existing investments data or null if file doesn't exist
+ */
+function loadExistingData(): { investments: Investment[], metadata: any } | null {
+    try {
+        const filePath = path.resolve(__dirname, '../../data/investments.json');
+        if (!existsSync(filePath)) {
+            return null;
+        }
+
+        const fileContent = readFileSync(filePath, 'utf8');
+        const data = JSON.parse(fileContent);
+        return data;
+    } catch (error) {
+        console.error('Error loading existing data:', error);
+        return null;
+    }
+}
+
+/**
  * Save investment data to a JSON file
  * @param data Investment data to save
  * @param revisionsMap Map of original ADA to the revising ADA
+ * @param ignoreExisting Whether to ignore existing data and overwrite it
  */
-function saveData(data: Investment[], revisionsMap?: Map<string, string>) {
+function saveData(data: Investment[], revisionsMap?: Map<string, string>, ignoreExisting?: boolean) {
     try {
         // Create data directory if it doesn't exist
         const dataDir = path.resolve(__dirname, '../../data');
@@ -56,27 +81,72 @@ function saveData(data: Investment[], revisionsMap?: Map<string, string>) {
             mkdirSync(dataDir, { recursive: true });
         }
 
+        let allInvestments = [...data];
+        let existingRevisions: any[] = [];
+
+        // If we're not ignoring existing data, merge with existing data
+        if (!ignoreExisting) {
+            const existingData = loadExistingData();
+            if (existingData) {
+                // Keep track of the ADAs in the new data to avoid duplicates
+                const newDataADAs = new Set(data.map(inv => inv.reference?.diavgeiaADA).filter(Boolean));
+
+                // Add existing investments that aren't in the new data
+                const existingInvestmentsToKeep = existingData.investments.filter(
+                    inv => inv.reference?.diavgeiaADA && !newDataADAs.has(inv.reference.diavgeiaADA)
+                );
+
+                console.log(`📋 Keeping ${existingInvestmentsToKeep.length} existing investments`);
+
+                // Combine existing and new investments
+                allInvestments = [...existingInvestmentsToKeep, ...data];
+
+                // Keep existing revision information
+                if (existingData.metadata?.revisionsExcluded) {
+                    existingRevisions = existingData.metadata.revisionsExcluded;
+                }
+            }
+        }
+
+        // Combine existing and new revision information
+        const combinedRevisions = [...existingRevisions];
+        if (revisionsMap) {
+            const newRevisions = Array.from(revisionsMap.entries()).map(([original, revision]) => ({
+                original,
+                replacedBy: revision
+            }));
+
+            // Add only unique revisions
+            for (const newRevision of newRevisions) {
+                const exists = combinedRevisions.some(
+                    rev => rev.original === newRevision.original && rev.replacedBy === newRevision.replacedBy
+                );
+
+                if (!exists) {
+                    combinedRevisions.push(newRevision);
+                }
+            }
+        }
+
         // Add metadata to the saved data
         const dataToSave = {
             metadata: {
                 generatedAt: new Date().toISOString(),
-                totalInvestments: data.length,
-                revisionsExcluded: revisionsMap ? Array.from(revisionsMap.entries()).map(([original, revision]) => ({
-                    original,
-                    replacedBy: revision
-                })) : []
+                totalInvestments: allInvestments.length,
+                revisionsExcluded: combinedRevisions
             },
-            investments: data
+            investments: allInvestments
         };
 
         // Save the data as JSON
         const filePath = path.join(dataDir, 'investments.json');
         writeFileSync(filePath, JSON.stringify(dataToSave, null, 2));
         console.log(`\n💾 Data saved to ${filePath}`);
+        console.log(`📊 Total investments: ${allInvestments.length}`);
 
         // If we have revision info, log it
-        if (revisionsMap && revisionsMap.size > 0) {
-            console.log(`📝 Note: ${revisionsMap.size} revised decision${revisionsMap.size !== 1 ? 's were' : ' was'} excluded to prevent double-counting`);
+        if (combinedRevisions.length > 0) {
+            console.log(`📝 Note: ${combinedRevisions.length} revised decision${combinedRevisions.length !== 1 ? 's were' : ' was'} excluded to prevent double-counting`);
         }
     } catch (error) {
         console.error('Error saving data:', error);
@@ -147,6 +217,22 @@ const main = async () => {
     const params = parseArgs();
     console.log('Parameters:', params);
 
+    // Load existing data if we're not ignoring it
+    let existingADAs: Set<string> = new Set();
+    if (!params.ignoreExisting) {
+        const existingData = loadExistingData();
+        if (existingData) {
+            existingADAs = new Set(
+                existingData.investments
+                    .filter(inv => inv.reference?.diavgeiaADA)
+                    .map(inv => inv.reference!.diavgeiaADA)
+            );
+            console.log(`📚 Found ${existingADAs.size} existing investment entries to avoid reprocessing`);
+        }
+    } else {
+        console.log('🔄 Ignoring existing entries as --ignore-existing flag is set');
+    }
+
     // Query the Diavgeia API for all decisions
     const decisions = await queryDiavgeiaAPI(params);
     if (decisions.length === 0) {
@@ -155,12 +241,27 @@ const main = async () => {
         return;
     }
 
+    // Filter out decisions that we already have processed (unless ignoreExisting is true)
+    let decisionsToProcess = decisions;
+    if (!params.ignoreExisting && existingADAs.size > 0) {
+        const beforeCount = decisionsToProcess.length;
+        decisionsToProcess = decisions.filter(decision => !existingADAs.has(decision.ada));
+        const skippedCount = beforeCount - decisionsToProcess.length;
+        console.log(`⏩ Skipping ${skippedCount} decision(s) that already exist in investments.json`);
+    }
+
+    if (decisionsToProcess.length === 0) {
+        console.log('No new decisions to process. All decisions already exist in the investments.json file.');
+        process.exit(0);
+        return;
+    }
+
     // Check decisions for revisions and enrich them with revision information
     console.log('\n🔍 Checking for revised decisions...');
     const revisionsMap = new Map<string, string>(); // Maps original ADA to revising ADA
     let revisionsFound = 0;
 
-    for (const decision of decisions) {
+    for (const decision of decisionsToProcess) {
         const revisionInfo = await checkIfRevision(decision);
         if (revisionInfo.isRevision && revisionInfo.revisesADA) {
             console.log(`⚠️ Decision ${decision.ada} is a revision of ${revisionInfo.revisesADA}`);
@@ -171,13 +272,13 @@ const main = async () => {
         }
     }
 
-    console.log(`\n📊 Found ${revisionsFound} revision${revisionsFound !== 1 ? 's' : ''} out of ${decisions.length} decisions`);
+    console.log(`\n📊 Found ${revisionsFound} revision${revisionsFound !== 1 ? 's' : ''} out of ${decisionsToProcess.length} decisions`);
 
     // Filter decisions to get only the relevant ones
     // Note: Claude has been instructed to prefer newer versions of decisions
     // when there are multiple versions of the same decision
     console.log('\n🤖 Asking Claude to filter relevant decisions (excluding older versions)...');
-    const relevantDecisions = await filterRelevantDecisions(decisions);
+    const relevantDecisions = await filterRelevantDecisions(decisionsToProcess);
     if (relevantDecisions.length === 0) {
         console.error('No relevant decisions found in the Diavgeia API.');
         process.exit(1);
@@ -298,7 +399,7 @@ const main = async () => {
     }
 
     // Save the data
-    saveData(validInvestments, revisionsMap);
+    saveData(validInvestments, revisionsMap, params.ignoreExisting);
 
     // Calculate total investment amount
     const totalAmount = validInvestments.reduce((sum, investment) => sum + (investment.totalAmount || 0), 0);
@@ -306,8 +407,24 @@ const main = async () => {
     // Display summary with emoji
     console.log('\n===================================');
     console.log(`🚀 SUMMARY OF STRATEGIC INVESTMENTS 🚀`);
-    console.log(`📊 Total investments found: ${validInvestments.length}`);
-    console.log(`💰 Total amount: €${totalAmount.toLocaleString('el-GR')}`);
+
+    // If we merged with existing data, show totals for both new and existing
+    if (!params.ignoreExisting) {
+        const existingData = loadExistingData();
+        const existingCount = existingData?.investments.length || 0;
+        const newUniqueCount = validInvestments.filter(inv =>
+            !existingData?.investments.some(
+                existingInv => existingInv.reference?.diavgeiaADA === inv.reference?.diavgeiaADA
+            )
+        ).length;
+
+        console.log(`📊 New unique investments: ${newUniqueCount}`);
+        console.log(`📊 Total investments saved: ${existingCount + newUniqueCount}`);
+    } else {
+        console.log(`📊 Total investments: ${validInvestments.length}`);
+    }
+
+    console.log(`💰 Total amount of new investments: €${totalAmount.toLocaleString('el-GR')}`);
     if (revisionsMap.size > 0) {
         console.log(`🧹 Excluded ${revisionsMap.size} revised decision${revisionsMap.size !== 1 ? 's' : ''} to prevent double-counting`);
     }
