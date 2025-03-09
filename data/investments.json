@@ -1,17 +1,8 @@
 {
   "metadata": {
-    "generatedAt": "2025-03-09T19:02:46.159Z",
-    "totalInvestments": 13,
-    "revisionsExcluded": [
-      {
-        "original": "ΒΙΟΜΗΧΑΝΙΚ",
-        "replacedBy": "ΨΔΜΙ46ΝΛΣΞ-5Ψ0"
-      },
-      {
-        "original": "ΦΑΡΜΑΚΕΥΤΙ",
-        "replacedBy": "6ΛΑ346ΝΛΣΞ-ΣΒΔ"
-      }
-    ]
+    "generatedAt": "2025-03-09T20:25:06.014Z",
+    "totalInvestments": 20,
+    "revisionsExcluded": []
   },
   "investments": [
     {
@@ -105,21 +96,21 @@
       "locations": [
         {
           "description": "Ερευνητικό κέντρο βιοτεχνολογίας",
-          "textLocation": "Άγιος Στέφανος, Δήμος Διονύσου, Περιφερειακή Ενότητα Βορείου Αττικής, Περιφέρεια Αττικής, Ελλάδα",
-          "lat": 38.141707,
-          "lon": 23.8586886
+          "textLocation": "Δημοτική κοινότητα Αγίου Στεφάνου, Δήμος Διονύσου, Περιφερειακή Ενότητα Βορείου Αττικής, Περιφέρεια Αττικής, Ελλάδα",
+          "lat": 38.1424499,
+          "lon": 23.8614481
         },
         {
           "description": "Μονάδα παραγωγής δραστικών με βιολογική διεργασία σε πιλοτική κλίμακα για κλινικές μελέτες",
-          "textLocation": "Άγιος Στέφανος, Δήμος Διονύσου, Περιφερειακή Ενότητα Βορείου Αττικής, Περιφέρεια Αττικής, Ελλάδα",
-          "lat": 38.141707,
-          "lon": 23.8586886
+          "textLocation": "Δημοτική κοινότητα Αγίου Στεφάνου, Δήμος Διονύσου, Περιφερειακή Ενότητα Βορείου Αττικής, Περιφέρεια Αττικής, Ελλάδα",
+          "lat": 38.1424499,
+          "lon": 23.8614481
         },
         {
           "description": "Μονάδα παραγωγής τελικών βιοτεχνολογικών προϊόντων σε πιλοτική κλίμακα με κλινικές μελέτες",
-          "textLocation": "Κρυονέρι, Δήμος Διονύσου, Περιφερειακή Ενότητα Βορείου Αττικής, Περιφέρεια Αττικής, Ελλάδα",
-          "lat": 38.1360707,
-          "lon": 23.8290729
+          "textLocation": "Δημοτική κοινότητα Κρυονερίου, Δήμος Διονύσου, Περιφερειακή Ενότητα Βορείου Αττικής, Περιφέρεια Αττικής, Ελλάδα",
+          "lat": 38.1432683,
+          "lon": 23.8227792
         }
       ],
       "fundingSource": [
@@ -219,7 +210,7 @@
       "name": "Ανάπτυξη 17 ΑΣΠΗΕ συνολικής ισχύος 327 MW στο Δήμο Καρύστου, Π.Ε. Ευβοίας",
       "totalAmount": 531732048,
       "references": {
-        "fek": "ΦΕΚ Β' 285/2020",
+        "fek": "ΦΕΚ Β' 285/21.12.2020",
         "diavgeiaADA": "6Τ5646ΝΛΣΞ-Σ97"
       },
       "amountBreakdown": [
@@ -278,14 +269,14 @@
       "amountBreakdown": [
         {
           "amount": 112300134,
-          "description": "Κατασκευαστικό Κόστος Κατοικιών"
+          "description": "Κατασκευαστικό Κόστος (Κατοικίες)"
         },
         {
           "amount": 6738007,
           "description": "Εκσκαφές - Ανασκαφές"
         },
         {
-          "amount": 11927711,
+          "amount": 16883111,
           "description": "Λοιπά κόστη (Σύμβουλοι, Σχεδιαστές, Διαχείριση έργου, Marketing κλπ.)"
         },
         {
@@ -295,7 +286,7 @@
       ],
       "locations": [
         {
-          "description": "Πολυτελή διαμερίσματα/μονοκατοικίες",
+          "description": "Πολυτελή διαμερίσματα/μονοκατοικίες και βοηθητικές εγκαταστάσεις",
           "textLocation": "Δημοτική Ενότητα Βούλας, Δήμος Βάρης-Βούλας-Βουλιαγμένης, Περιφερειακή Ενότητα Ανατολικής Αττικής, Περιφέρεια Αττικής, Ελλάδα",
           "lat": 37.8465864,
           "lon": 23.7722077
@@ -438,17 +429,17 @@
       "name": "ΥΒΡΙΔΙΚΟ ΕΡΓΟ ΦΡΑΓΜΑΤΟΣ ΠΟΤΑΜΩΝ (ΑΜΑΡΙΟΥ)",
       "totalAmount": 240000000,
       "references": {
-        "fek": "ΦΕΚ Β' 3325/15.04.2022",
+        "fek": null,
         "diavgeiaADA": "Ψ84Π46ΝΛΣΞ-ΞΘΙ"
       },
       "amountBreakdown": [
         {
           "amount": 97000000,
-          "description": "Σύνολο Κόστους Υποέργου Α"
+          "description": "Υποέργο Α (Αιολικοί σταθμοί)"
         },
         {
           "amount": 77200000,
-          "description": "Σύνολο Κόστους Υποέργου Β"
+          "description": "Υποέργο Β (Σύστημα ελεγχόμενης παραγωγής και αποθήκευσης ενέργειας)"
         },
         {
           "amount": 62800000,
@@ -577,7 +568,7 @@
       "name": "Τουριστική Ανάπτυξη στην περιοχή Κουκουναριές - Νήσου Σκιάθου, Π.Ε. Μαγνησίας",
       "totalAmount": 52000000,
       "references": {
-        "fek": null,
+        "fek": "",
         "diavgeiaADA": "9Γ2Ψ46ΝΛΣΞ-ΤΞΑ"
       },
       "amountBreakdown": [
@@ -894,7 +885,7 @@
       ],
       "fundingSource": [
         {
-          "source": "Μητρική εταιρεία H.I.G. Europa Realty Partners ΙΙ L.P",
+          "source": "H.I.G. Europa Realty Partners ΙΙ L.P (μητρική εταιρεία)",
           "perc": 0.123,
           "amount": 29975402
         },
@@ -918,6 +909,361 @@
       "reference": {
         "fek": "",
         "diavgeiaADA": "9ΙΝΘ46ΝΛΣΞ-ΗΩ7"
+      }
+    },
+    {
+      "dateApproved": "2022-12-09",
+      "beneficiary": "BGS ALCOHOLS ΑΝΩΝΥΜΗ ΕΤΑΙΡΕΙΑ",
+      "name": "Δημιουργία νέας μονάδας αιθανόλης στην Πάτρα",
+      "totalAmount": 34294476.5,
+      "fek": "ΦΕΚ 6348/Β/12-12-2022",
+      "amountBreakdown": [
+        {
+          "amount": 34294476.5,
+          "description": "Δημιουργία νέας μονάδας αιθανόλης"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Βιομηχανική περιοχή Πατρών",
+          "textLocation": "Πάτρα, Αχαΐα, Δυτική Ελλάδα",
+          "lat": 38.2466395,
+          "lon": 21.734574
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "Ίδια κεφάλαια",
+          "perc": 0.25,
+          "amount": 8573619.13
+        },
+        {
+          "source": "Τραπεζικός δανεισμός",
+          "perc": 0.75,
+          "amount": 25720857.38
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Φορολογικές απαλλαγές",
+          "incentiveType": "TAX_EXEMPTION"
+        },
+        {
+          "name": "Επιτάχυνση αδειοδότησης",
+          "incentiveType": "LICENSING_ACCELERATION"
+        },
+        {
+          "name": "Χωροθέτηση επένδυσης",
+          "incentiveType": "SPATIAL_PLANNING"
+        }
+      ],
+      "category": "PRODUCTION_MANUFACTURING",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "",
+        "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/bgs-dimiourgia-neas-monadas-aithanolis-stin-patra"
+      }
+    },
+    {
+      "dateApproved": "2022-12-30",
+      "beneficiary": "ΜΥΤΙΛΗΝΑΙΟΣ ΑΕ",
+      "name": "Επέκταση δυναμικότητας του βιομηχανικού συγκροτήματος ειδικών προηγμένων μεταλλικών κατασκευών της ΜΥΤΙΛΗΝΑΙΟΣ ΑΕ στον Βόλο",
+      "totalAmount": 46000000,
+      "fek": "ΦΕΚ Β' 6943/30.12.2022",
+      "amountBreakdown": [
+        {
+          "amount": 46000000,
+          "description": "Επέκταση δυναμικότητας βιομηχανικού συγκροτήματος"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Βιομηχανικό συγκρότημα",
+          "textLocation": "Βόλος, Θεσσαλία",
+          "lat": 39.366584,
+          "lon": 22.9506769
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "Ίδια κεφάλαια",
+          "perc": 1,
+          "amount": 46000000
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Ταχεία αδειοδότηση",
+          "incentiveType": "LICENSING_ACCELERATION"
+        },
+        {
+          "name": "Φορολογικά κίνητρα",
+          "incentiveType": "TAX_INCENTIVES"
+        }
+      ],
+      "category": "PRODUCTION_MANUFACTURING",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "",
+        "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/epektasi-dinamikotitas-tou-viomichanikou-sigkrotimatos-idikon-proigmenon-metallikon-kataskeuon-tis-mitilinaios-ae-ston-volo"
+      }
+    },
+    {
+      "dateApproved": "2024-10-03",
+      "beneficiary": "OLYMPIC AIR A.E.",
+      "name": "Επένδυση στην αγορά και εκμετάλλευση αεροσκαφών ATR 42-600S",
+      "totalAmount": 74750000,
+      "references": {
+        "fek": "ΦΕΚ Β' 5493/03.10.2024"
+      },
+      "amountBreakdown": [
+        {
+          "amount": 74750000,
+          "description": "Αγορά και εκμετάλλευση αεροσκαφών ATR 42-600S"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Έδρα εταιρείας",
+          "textLocation": "Αθήνα, Αττική",
+          "lat": 37.9838096,
+          "lon": 23.7275388
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "Ίδια κεφάλαια",
+          "perc": 0.25,
+          "amount": 18687500
+        },
+        {
+          "source": "Τραπεζικός δανεισμός",
+          "perc": 0.75,
+          "amount": 56062500
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Φορολογικές απαλλαγές",
+          "incentiveType": "TAX_EXEMPTION"
+        },
+        {
+          "name": "Επιτάχυνση αδειοδοτικών διαδικασιών",
+          "incentiveType": "LICENSING_ACCELERATION"
+        }
+      ],
+      "category": "SERVICES_EDUCATION",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "",
+        "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/olympic-air-a-e"
+      }
+    },
+    {
+      "dateApproved": "2023-06-22",
+      "beneficiary": "Ravago Hellas Μ.Α.Β.Ε.Ε.",
+      "name": "Εκσυγχρονισμός, ενεργειακή αναβάθμιση και επέκταση (προβλήτα, μονάδες παραγωγής) βιομηχανικής μονάδας της Ravago Hellas Μ.Α.Β.Ε.Ε.",
+      "totalAmount": 72657472,
+      "fek": "ΦΕΚ Β' 3209/22.06.2023",
+      "amountBreakdown": [
+        {
+          "amount": 72657472,
+          "description": "Συνολικό κόστος επένδυσης"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Βιομηχανική μονάδα",
+          "textLocation": "Θέση Βαμβακιά, Δήμος Θηβαίων, Περιφερειακή Ενότητα Βοιωτίας, Περιφέρεια Στερεάς Ελλάδας",
+          "lat": 38.2563685,
+          "lon": 23.0488541
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "Ίδια κεφάλαια",
+          "perc": 0.25,
+          "amount": 18164368
+        },
+        {
+          "source": "Τραπεζικός δανεισμός",
+          "perc": 0.75,
+          "amount": 54493104
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Φορολογικές απαλλαγές",
+          "incentiveType": "TAX_EXEMPTION"
+        },
+        {
+          "name": "Επιτάχυνση αδειοδότησης",
+          "incentiveType": "LICENSING_ACCELERATION"
+        },
+        {
+          "name": "Χωροθέτηση επένδυσης",
+          "incentiveType": "SPATIAL_PLANNING"
+        }
+      ],
+      "category": "PRODUCTION_MANUFACTURING",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "",
+        "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/eksigchronismos-energiaki-anavathmisi-kai-epektasi-provlita-monades-paragogis-viomichanikis-monadas-tis-ravago-hellas-m-a-v-e-e"
+      }
+    },
+    {
+      "dateApproved": "2023-05-16",
+      "beneficiary": "SCARLET BEACH ΜΟΝΟΠΡΟΣΩΠΗ ΑΝΩΝΥΜΗ ΕΤΑΙΡΕΙΑ",
+      "name": "Ίδρυση και Λειτουργία Σύνθετου Τουριστικού Καταλύματος",
+      "totalAmount": 202990000,
+      "fek": "ΦΕΚ Β' 3201/16.05.2023",
+      "amountBreakdown": [
+        {
+          "amount": 202990000,
+          "description": "Σύνθετο Τουριστικό Κατάλυμα"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Παραλιακή έκταση στην περιοχή Κοκκίνη Χάνι",
+          "textLocation": "Κοκκίνη Χάνι, Δήμος Χερσονήσου, Περιφερειακή Ενότητα Ηρακλείου, Κρήτη",
+          "lat": 35.3306826,
+          "lon": 25.2563374
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "Ίδια κεφάλαια",
+          "perc": 0.25,
+          "amount": 50747500
+        },
+        {
+          "source": "Εξωτερική χρηματοδότηση",
+          "perc": 0.75,
+          "amount": 152242500
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Ταχεία αδειοδότηση",
+          "incentiveType": "LICENSING_ACCELERATION"
+        },
+        {
+          "name": "Φορολογικές απαλλαγές",
+          "incentiveType": "TAX_EXEMPTION"
+        },
+        {
+          "name": "Χωροταξικά κίνητρα",
+          "incentiveType": "SPATIAL_DEVELOPMENT"
+        }
+      ],
+      "category": "TOURISM_CULTURE",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "",
+        "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/idrisi-kai-litourgia-sinthetou-touristikou-katalimatos-scarlet-beach"
+      }
+    },
+    {
+      "dateApproved": "2023-05-16",
+      "beneficiary": "CRETAN TALE ΜΟΝΟΠΡΟΣΩΠΗ ΑΝΩΝΥΜΗ ΕΤΑΙΡΕΙΑ",
+      "name": "CRETAN TALE",
+      "totalAmount": 235825150,
+      "reference": {
+        "fek": "ΦΕΚ Β' 3201/16.05.2023",
+        "diavgeiaADA": "",
+        "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/cretan-tale"
+      },
+      "amountBreakdown": [
+        {
+          "amount": 235825150,
+          "description": "Τουριστικό συγκρότημα"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Τουριστικό συγκρότημα",
+          "textLocation": "Δήμος Χερσονήσου, Περιφερειακή Ενότητα Ηρακλείου, Περιφέρεια Κρήτης",
+          "lat": 35.3049918,
+          "lon": 25.3548713
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "Ίδια κεφάλαια",
+          "perc": 0.25,
+          "amount": 58956287.5
+        },
+        {
+          "source": "Τραπεζικός δανεισμός",
+          "perc": 0.75,
+          "amount": 176868862.5
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Ταχεία αδειοδότηση",
+          "incentiveType": "LICENSING_ACCELERATION"
+        },
+        {
+          "name": "Φορολογικές απαλλαγές",
+          "incentiveType": "TAX_EXEMPTION"
+        }
+      ],
+      "category": "TOURISM_CULTURE"
+    },
+    {
+      "dateApproved": "2023-05-10",
+      "beneficiary": "INTERTRADE HELLAS ΜΟΝΟΠΡΟΣΩΠΗ Α.Ε.",
+      "name": "Επέκταση Δυναμικότητας Βιομηχανικής Μονάδας Παραγωγής Προϊόντων Χάρτου",
+      "totalAmount": 99876651.4,
+      "fek": "ΦΕΚ Β' 3084/10.05.2023",
+      "amountBreakdown": [
+        {
+          "amount": 99876651.4,
+          "description": "Επέκταση δυναμικότητας βιομηχανικής μονάδας παραγωγής προϊόντων χάρτου"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Βιομηχανική μονάδα",
+          "textLocation": "Θέση Λάκκα Χατζή, Οινόφυτα, Βοιωτία",
+          "lat": 38.3080648,
+          "lon": 23.6391172
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "Ίδια κεφάλαια",
+          "perc": 0.25,
+          "amount": 24969162.85
+        },
+        {
+          "source": "Τραπεζικός δανεισμός",
+          "perc": 0.75,
+          "amount": 74907488.55
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Ταχεία αδειοδότηση",
+          "incentiveType": "Licensing"
+        },
+        {
+          "name": "Φορολογικές απαλλαγές",
+          "incentiveType": "Tax"
+        },
+        {
+          "name": "Ενίσχυση δαπανών",
+          "incentiveType": "Subsidy"
+        }
+      ],
+      "category": "PRODUCTION_MANUFACTURING",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "",
+        "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/epektasi-dinamikotitas-viomichanikis-monadas-paragogis-proionton-chartou"
       }
     }
   ]
