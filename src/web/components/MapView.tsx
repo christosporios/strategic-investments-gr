@@ -3,6 +3,8 @@ import { Investment } from '../../types';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import DateRangeFilter from './DateRangeFilter';
+import CategoryFilter from './CategoryFilter';
+import { Category, CategoryColors, DEFAULT_CATEGORY_COLOR } from '../../types/constants.js';
 
 // Set Mapbox token
 mapboxgl.accessToken = 'pk.eyJ1IjoiY2hyaXN0b3Nwb3Jpb3MiLCJhIjoiY204MXJpejN0MDRzbzJrcXZzbXRzbDdoYiJ9.kEGfS3xl4_kqFEEkQrxGNA';
@@ -17,6 +19,38 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
     const markersRef = useRef<mapboxgl.Marker[]>([]);
     const [loading, setLoading] = useState(true);
     const [filteredInvestments, setFilteredInvestments] = useState<Investment[]>(investments);
+    const [selectedCategories, setSelectedCategories] = useState<Category[]>(Object.values(Category));
+    const [showUncategorized, setShowUncategorized] = useState<boolean>(true);
+    const [dateRange, setDateRange] = useState<{ startDate: string; endDate: string } | null>(null);
+
+    // Apply all filters together
+    const applyAllFilters = () => {
+        // Start with all investments
+        let filtered = [...investments];
+
+        // Apply date filter if it exists
+        if (dateRange) {
+            filtered = filtered.filter(inv => {
+                if (!inv.dateApproved) return false;
+                const investmentDate = new Date(inv.dateApproved);
+                const start = new Date(dateRange.startDate);
+                const end = new Date(dateRange.endDate);
+                return investmentDate >= start && investmentDate <= end;
+            });
+        }
+
+        // Apply category filters
+        filtered = filtered.filter(inv => {
+            // If it has a category, check if that category is selected
+            if (inv.category) {
+                return selectedCategories.includes(inv.category);
+            }
+            // If it doesn't have a category, check if we're showing uncategorized
+            return showUncategorized;
+        });
+
+        setFilteredInvestments(filtered);
+    };
 
     // Filter investments that have valid coordinates
     const geolocatedInvestments = filteredInvestments.filter(investment =>
@@ -40,21 +74,45 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
 
     // Handle date filter change
     const handleDateFilterChange = (startDate: string, endDate: string) => {
-        const filtered = investments.filter(inv => {
-            if (!inv.dateApproved) return false;
-            const investmentDate = new Date(inv.dateApproved);
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            return investmentDate >= start && investmentDate <= end;
-        });
+        setDateRange({ startDate, endDate });
+    };
 
-        setFilteredInvestments(filtered);
+    // Handle category toggle
+    const handleCategoryToggle = (category: Category) => {
+        setSelectedCategories(prev => {
+            const isSelected = prev.includes(category);
+
+            if (isSelected) {
+                // Remove the category if it's already selected
+                return prev.filter(c => c !== category);
+            } else {
+                // Add the category if it's not already selected
+                return [...prev, category];
+            }
+        });
+    };
+
+    // Handle uncategorized toggle
+    const handleUncategorizedToggle = () => {
+        setShowUncategorized(!showUncategorized);
+    };
+
+    // Get color for investment based on its category
+    const getInvestmentColor = (investment: Investment): string => {
+        if (!investment.category) {
+            return DEFAULT_CATEGORY_COLOR;
+        }
+
+        return CategoryColors[investment.category];
     };
 
     // Create custom marker element
-    const createMarkerElement = (investment: Investment, amount: number) => {
+    const createMarkerElement = (investment: Investment, amount: number, locationIndex: number, totalLocations: number) => {
         // Determine size based on investment amount (logarithmic scale)
         const size = Math.max(35, Math.min(80, 25 + Math.log10(amount / 1000000) * 15));
+
+        // Get color based on investment category
+        const color = getInvestmentColor(investment);
 
         // Create the marker element
         const el = document.createElement('div');
@@ -62,7 +120,7 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
         el.style.width = `${size}px`;
         el.style.height = `${size}px`;
         el.style.borderRadius = '50%';
-        el.style.background = 'rgba(67, 56, 202, 0.8)';
+        el.style.background = color;
         el.style.border = '2px solid white';
         el.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
         el.style.color = 'white';
@@ -82,7 +140,23 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
             formattedAmount = `${(amount / 1000000).toFixed(0)}M`;
         }
 
-        el.innerHTML = formattedAmount;
+        // For investments with multiple locations, add a small indicator
+        let markerContent = formattedAmount;
+        if (totalLocations > 1) {
+            // Calculate a font size based on the marker size
+            const indicatorSize = Math.max(8, Math.min(10, size / 5));
+
+            markerContent = `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                    <div style="line-height: 1;">${formattedAmount}</div>
+                    <div style="font-size: ${indicatorSize}px; font-weight: normal; opacity: 0.9; margin-top: 2px; line-height: 1;">
+                        ${locationIndex + 1} από ${totalLocations}
+                    </div>
+                </div>
+            `;
+        }
+
+        el.innerHTML = markerContent;
 
         return el;
     };
@@ -97,6 +171,10 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
 
         // Add new markers
         geolocatedInvestments.forEach(investment => {
+            // Count valid locations for this investment (those with lat/lon)
+            const totalValidLocations = investment.locations.filter(loc => loc.lat && loc.lon).length;
+            let validLocationIndex = 0;
+
             investment.locations.forEach(location => {
                 if (location.lat && location.lon) {
                     // Create a permalink to the investment details in the table view with proper URL encoding
@@ -108,6 +186,9 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
                         <div class="p-3">
                             <h3 class="font-bold text-base mb-1">${investment.name}</h3>
                             <p class="text-sm">${location.description}</p>
+                            ${totalValidLocations > 1 ?
+                            `<p class="text-xs text-gray-500">(Τοποθεσία ${validLocationIndex + 1} από ${totalValidLocations})</p>` :
+                            ''}
                             <div class="mt-3 pt-2 border-t border-gray-200 flex justify-between">
                                 <span class="text-sm font-semibold">€${investment.totalAmount?.toLocaleString('el-GR') || 'N/A'}</span>
                                 <span class="text-xs text-gray-500">${investment.dateApproved || 'N/A'}</span>
@@ -129,7 +210,7 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
 
                     // Create a custom marker
                     const marker = new mapboxgl.Marker({
-                        element: createMarkerElement(investment, investment.totalAmount || 0),
+                        element: createMarkerElement(investment, investment.totalAmount || 0, validLocationIndex, totalValidLocations),
                         anchor: 'center'
                     })
                         .setLngLat([location.lon, location.lat])
@@ -137,6 +218,9 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
                         .addTo(map.current!);
 
                     markersRef.current.push(marker);
+
+                    // Increment our counter of valid locations
+                    validLocationIndex++;
                 }
             });
         });
@@ -195,6 +279,11 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
         addMarkersToMap();
     }, [filteredInvestments]);
 
+    // Apply all filters whenever any filter state changes
+    useEffect(() => {
+        applyAllFilters();
+    }, [selectedCategories, showUncategorized, dateRange]);
+
     return (
         <div className="relative w-full h-full">
             {/* Map container */}
@@ -209,7 +298,7 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
                 </div>
             )}
 
-            {/* Combined info panel and date filter */}
+            {/* Combined info panel, category filter, and date filter */}
             <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-xl px-4">
                 <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md overflow-hidden">
                     {/* Info section */}
@@ -220,6 +309,17 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
                             <div className="text-sm">€{formatLargeAmount(totalAmount)}</div>
                         </div>
                         <div className="text-xs text-gray-500">από σύνολο {investments.length}</div>
+                    </div>
+
+                    {/* Category filter section */}
+                    <div className="px-4 py-2 border-b border-gray-200/50">
+                        <CategoryFilter
+                            selectedCategories={selectedCategories}
+                            onCategoryToggle={handleCategoryToggle}
+                            onUncategorizedToggle={handleUncategorizedToggle}
+                            showUncategorized={showUncategorized}
+                            investments={investments}
+                        />
                     </div>
 
                     {/* Date filter section */}

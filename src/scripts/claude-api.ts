@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { Investment } from '../types/index.js';
+import { IncentiveType, Category } from '../types/constants.js';
 import dotenv from 'dotenv';
 
 // Load environment variables from .env file
@@ -248,9 +249,34 @@ Extract these fields:
    - If both percentage and amount are specified, prioritize using percentage
    - Example: [{source: "Ίδια κεφάλαια", perc: 0.3}, {source: "Τραπεζικός δανεισμός", perc: 0.7}]
 
-9. Incentives approved (incentivesApproved): List of {name: string}
+9. Incentives approved (incentivesApproved): List of {name: string, incentiveType?: string}
    - List all incentives that were approved in the document
-   - Example: [{name: "Φορολογικές απαλλαγές"}, {name: "Επιτάχυνση αδειοδότησης"}]
+   - Classify each incentive according to these predefined types:
+     * FAST_TRACK_LICENSING: For fast-track or expedited licensing procedures
+     * SPECIAL_ZONING: For special zoning arrangements or location incentives
+     * TAX_RATE_FREEZE: For freezing tax rates for a period
+     * TAX_EXEMPTION: For tax exemptions or reductions
+     * ACCELERATED_DEPRECIATION: For accelerated depreciation allowances
+     * INVESTMENT_GRANT: For direct grants or subsidies on the investment
+     * LEASING_SUBSIDY: For leasing subsidies
+     * EMPLOYMENT_COST_SUBSIDY: For subsidies related to employment costs
+     * AUDITOR_MONITORING: For auditor monitoring benefits
+     * SHORELINE_USE: For shoreline use rights
+     * EXPROPRIATION_SUPPORT: For support with expropriation procedures
+   - Assign the most appropriate type based on the description in the document
+   - A single incentive can only have one type
+   - If the incentive doesn't clearly match any type, omit the incentiveType field
+   - Example: [{name: "Φορολογικές απαλλαγές", incentiveType: "TAX_EXEMPTION"}, {name: "Επιτάχυνση αδειοδότησης", incentiveType: "FAST_TRACK_LICENSING"}]
+
+10. Category (category): One of the following strings that best describes the investment's sector:
+   - PRODUCTION_MANUFACTURING: For investments in production facilities, factories, manufacturing, processing, construction, energy production, or similar industrial activities (Παραγωγή & Μεταποίηση)
+   - TECHNOLOGY_INNOVATION: For investments in technology companies, R&D centers, software development, telecommunications, digital services, or innovative projects (Τεχνολογία & Καινοτομία) 
+   - TOURISM_CULTURE: For investments in hotels, resorts, tourism facilities, cultural venues, entertainment facilities, or heritage sites (Τουρισμός & Πολιτισμός)
+   - SERVICES_EDUCATION: For investments in service sector, educational institutions, training centers, or business services (Υπηρεσίες & Εκπαίδευση)
+   - HEALTHCARE_WELFARE: For investments in hospitals, clinics, care facilities, medical centers, or social welfare projects (Υγεία & Κοινωνική Μέριμνα)
+   - You MUST select EXACTLY ONE category that best matches the investment
+   - Base your classification on the project description, activities, and purpose described in the document
+   - Example: "TOURISM_CULTURE"
 
 IMPORTANT:
 - Make your best effort to find ALL requested information, especially the total amount
@@ -357,6 +383,12 @@ IMPORTANT:
 
                 if (!Array.isArray(investmentData.incentivesApproved)) {
                     investmentData.incentivesApproved = [];
+                }
+
+                // Validate the category is one of the enum values (if provided)
+                if (investmentData.category && !Object.values(Category).includes(investmentData.category as Category)) {
+                    console.warn(`Invalid category value: ${investmentData.category}, setting to undefined`);
+                    investmentData.category = undefined;
                 }
 
                 return investmentData;

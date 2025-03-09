@@ -1,3 +1,5 @@
+import { IncentiveType, Category } from './constants.js';
+
 export interface Location {
     description: string;
     textLocation?: string;
@@ -18,6 +20,7 @@ export interface FundingSource {
 
 export interface Incentive {
     name: string;
+    incentiveType?: IncentiveType;
 }
 
 export interface Reference {
@@ -36,6 +39,7 @@ export interface Investment {
     locations: Location[];
     fundingSource: FundingSource[];
     incentivesApproved: Incentive[];
+    category?: Category;
 }
 
 export interface CollectDataParams {

@@ -53,6 +53,36 @@ const HelpView: React.FC<HelpViewProps> = ({ metadata }) => {
                 </div>
             )}
 
+            {/* Strategic Investments Card - Moved to be after data recency */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Στρατηγικές Επενδύσεις</CardTitle>
+                    <CardDescription>Πληροφορίες για το πλαίσιο και τα κίνητρα των στρατηγικών επενδύσεων</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p className="mb-4">
+                        Οι Στρατηγικές Επενδύσεις αποτελούν σημαντικό εργαλείο οικονομικής ανάπτυξης για την Ελλάδα, προσελκύοντας επενδυτικά κεφάλαια και δημιουργώντας θέσεις εργασίας.
+                        Διέπονται από τον Νόμο 4864/2021, ο οποίος καθορίζει τις κατηγορίες τους, όπως Στρατηγικές Επενδύσεις 1 και 2, Εμβληματικές Επενδύσεις, Επενδύσεις Ταχείας Αδειοδότησης και Αυτοδίκαια Εντασσόμενες Επενδύσεις.
+                        Για να χαρακτηριστεί μια επένδυση ως στρατηγική, πρέπει να πληροί συγκεκριμένα κριτήρια προϋπολογισμού και δημιουργίας θέσεων εργασίας, ενώ μπορεί να αφορά
+                        τομείς όπως βιομηχανία, ενέργεια, τουρισμό, τεχνολογία, υγεία, και άλλους καίριους τομείς της οικονομίας.
+                    </p>
+                    <p className="mb-4">
+                        Τα κίνητρα που παρέχονται στις στρατηγικές επενδύσεις περιλαμβάνουν:
+                    </p>
+                    <ul className="list-disc pl-6 mb-4 space-y-1 text-gray-700">
+                        <li><strong>Ταχεία αδειοδότηση</strong> με προθεσμία 45 ημερών για την έκδοση αδειών</li>
+                        <li><strong>Ειδικά σχέδια χωροθέτησης</strong> (Ε.Σ.Χ.Α.Σ.Ε.) με ευνοϊκούς όρους δόμησης</li>
+                        <li><strong>Φορολογικά κίνητρα</strong> όπως σταθεροποίηση φορολογικού συντελεστή για 12 έτη, φορολογικές απαλλαγές και επιταχυνόμενες αποσβέσεις</li>
+                        <li><strong>Επιχορηγήσεις δαπανών</strong> επένδυσης, leasing και κόστους απασχόλησης</li>
+                        <li><strong>Υποστηρικτικά μέτρα</strong> όπως διευκολύνσεις στη χρήση αιγιαλού και απαλλοτριώσεις</li>
+                    </ul>
+                    <p>
+                        Περισσότερες πληροφορίες είναι διαθέσιμες στην <a href="https://www.enterprisegreece.gov.gr/ependyste-sthn-ellada/strathgikes-ependyseis" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Enterprise Greece</a> και
+                        το <a href="https://mindev.gov.gr/stratigikes-ependyseis/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Υπουργείο Ανάπτυξης</a>.
+                    </p>
+                </CardContent>
+            </Card>
+
             <Card>
                 <CardHeader>
                     <CardTitle>Σχετικά με την εφαρμογή</CardTitle>
