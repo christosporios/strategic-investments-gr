@@ -211,7 +211,7 @@ const DetailRow: React.FC<DetailRowProps> = ({ investment }) => {
                             <span className="text-gray-500">Ημερομηνία Έγκρισης:</span>
                             <span className="font-medium">{investment.dateApproved}</span>
                             <span className="text-gray-500">Συνολικό Ποσό:</span>
-                            <span className="font-medium">€{investment.totalAmount?.toLocaleString('el-GR')}</span>
+                            <span className="font-medium break-words">{investment.totalAmount ? `€${investment.totalAmount.toLocaleString('el-GR')}` : 'N/A'}</span>
                         </div>
                     </div>
 
@@ -282,7 +282,7 @@ const DetailRow: React.FC<DetailRowProps> = ({ investment }) => {
                                         {investment.amountBreakdown.map((item, idx) => (
                                             <tr key={idx}>
                                                 <td className="px-4 py-2 text-sm text-gray-900">{item.description}</td>
-                                                <td className="px-4 py-2 text-sm text-gray-900 text-right">{item.amount.toLocaleString('el-GR')}</td>
+                                                <td className="px-4 py-2 text-sm text-gray-900 text-right whitespace-normal break-all">{item.amount.toLocaleString('el-GR')}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -301,9 +301,9 @@ const DetailRow: React.FC<DetailRowProps> = ({ investment }) => {
                                 {investment.fundingSource.map((source, idx) => (
                                     <div key={idx} className="flex justify-between p-2 bg-white rounded border border-gray-200">
                                         <span className="font-medium">{source.source}</span>
-                                        <div className="text-right">
+                                        <div className="text-right flex-shrink-0">
                                             {source.perc && <span className="text-xs text-gray-500 mr-2">{(source.perc * 100).toFixed(1)}%</span>}
-                                            {source.amount && <span className="font-medium">€{source.amount.toLocaleString('el-GR')}</span>}
+                                            {source.amount && <span className="font-medium break-words">{`€${source.amount.toLocaleString('el-GR')}`}</span>}
                                         </div>
                                     </div>
                                 ))}
@@ -490,7 +490,7 @@ const TableView: React.FC<TableViewProps> = ({ investments, totalAmount }) => {
                 accessorKey: 'totalAmount',
                 header: 'Ποσό (€)',
                 cell: ({ row }) => (
-                    <div className="text-right font-medium">
+                    <div className="text-right font-medium whitespace-normal">
                         {row.original.totalAmount?.toLocaleString('el-GR') || 'N/A'}
                     </div>
                 ),
