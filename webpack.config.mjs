@@ -9,12 +9,32 @@ const __dirname = path.dirname(__filename);
 
 // Create a function to determine the publicPath for GitHub Pages
 const getPublicPath = () => {
-    // Get the repository name from package.json (assuming it matches GitHub repo name)
-    const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
-    const repoName = packageJson.name;
+    // In development, use the root path
+    if (process.env.NODE_ENV !== 'production') {
+        return '/';
+    }
 
-    // Use '/' for development, and the repo name for production
-    return process.env.NODE_ENV === 'production' ? `/${repoName}/` : '/';
+    try {
+        // Get the repository name from homepage in package.json
+        const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+
+        if (packageJson.homepage) {
+            // Extract the repository name from the homepage URL
+            const url = new URL(packageJson.homepage);
+            const pathSegments = url.pathname.split('/').filter(Boolean);
+
+            // The last segment should be the repository name
+            if (pathSegments.length > 0) {
+                return `/${pathSegments[pathSegments.length - 1]}/`;
+            }
+        }
+
+        // Fallback to the package name if homepage is not properly set
+        return `/${packageJson.name}/`;
+    } catch (error) {
+        console.warn('Error determining public path from package.json:', error);
+        return '/';
+    }
 };
 
 export default {

@@ -22,7 +22,7 @@
     "transparency"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.12",
     "@types/node": "^20.11.17",
@@ -51,7 +51,7 @@
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
   },
-  "homepage": "https://[username].github.io/strategic-investments",
+  "homepage": "https://christosporios.github.io/strategic-investments-gr",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
     "@radix-ui/react-slider": "^1.2.3",
