@@ -59,45 +59,46 @@ const Header: React.FC<HeaderProps> = ({
     };
 
     return (
-        <div className="sticky top-4 z-50 mx-4 md:mx-6">
+        <div className="sticky top-4 z-50 mx-2 md:mx-6">
             <div className="bg-white/80 backdrop-blur-md border border-gray-200 shadow-md rounded-lg">
-                <div className="container mx-auto flex items-center justify-between h-16 px-4 md:px-6">
-                    <h1 className="text-xl font-semibold">
-                        {totalInvestments} στρατηγικές επενδύσεις αξίας {formattedAmount} δις €
+                <div className="container mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between px-2 py-2 md:py-0 md:h-16 md:px-6">
+                    <h1 className="text-sm md:text-base lg:text-xl font-semibold leading-tight text-center md:text-left py-2 md:py-0">
+                        <span className="whitespace-nowrap">{totalInvestments} στρατηγικές επενδύσεις</span>
+                        <span className="whitespace-nowrap"> αξίας {formattedAmount} δις €</span>
                     </h1>
 
-                    <div className="flex items-center space-x-1 bg-muted p-1 rounded-md">
+                    <div className="flex items-center space-x-1 bg-muted p-1 rounded-md mb-2 md:mb-0">
                         <button
                             onClick={() => handleViewChange('map')}
-                            className={`flex items-center gap-1 px-3 py-1.5 rounded-sm text-sm font-medium transition-colors ${activeView === 'map'
+                            className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-sm text-xs md:text-sm font-medium transition-colors ${activeView === 'map'
                                 ? 'bg-background text-foreground shadow-sm'
                                 : 'text-muted-foreground hover:bg-background/50'
                                 }`}
                         >
-                            <MapIcon className="h-4 w-4" />
-                            <span className="hidden sm:inline">Χάρτης</span>
+                            <MapIcon className="h-3 w-3 md:h-4 md:w-4" />
+                            <span className="inline">Χάρτης</span>
                         </button>
 
                         <button
                             onClick={() => handleViewChange('table')}
-                            className={`flex items-center gap-1 px-3 py-1.5 rounded-sm text-sm font-medium transition-colors ${activeView === 'table'
+                            className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-sm text-xs md:text-sm font-medium transition-colors ${activeView === 'table'
                                 ? 'bg-background text-foreground shadow-sm'
                                 : 'text-muted-foreground hover:bg-background/50'
                                 }`}
                         >
-                            <TableIcon className="h-4 w-4" />
-                            <span className="hidden sm:inline">Πίνακας</span>
+                            <TableIcon className="h-3 w-3 md:h-4 md:w-4" />
+                            <span className="inline">Πίνακας</span>
                         </button>
 
                         <button
                             onClick={() => handleViewChange('help')}
-                            className={`flex items-center gap-1 px-3 py-1.5 rounded-sm text-sm font-medium transition-colors ${activeView === 'help'
+                            className={`flex items-center gap-1 px-2 py-1 md:px-3 md:py-1.5 rounded-sm text-xs md:text-sm font-medium transition-colors ${activeView === 'help'
                                 ? 'bg-background text-foreground shadow-sm'
                                 : 'text-muted-foreground hover:bg-background/50'
                                 }`}
                         >
-                            <HelpCircleIcon className="h-4 w-4" />
-                            <span className="hidden sm:inline">Βοήθεια</span>
+                            <HelpCircleIcon className="h-3 w-3 md:h-4 md:w-4" />
+                            <span className="inline">Βοήθεια</span>
                         </button>
                     </div>
                 </div>

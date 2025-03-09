@@ -172,8 +172,7 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
             attributionControl: false
         });
 
-        // Add navigation controls
-        map.current.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+        // Add attribution only (removed navigation controls)
         map.current.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-right');
 
         // Setup map
