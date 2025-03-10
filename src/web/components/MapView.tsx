@@ -375,7 +375,7 @@ const MapView: React.FC<MapViewProps> = ({ investments }) => {
     return (
         <div className="relative w-full h-full flex-1" style={{ zIndex: 0 }}>
             {/* Map container - Increased z-index to be above header on mobile */}
-            <div ref={mapContainer} className="w-full h-full absolute inset-0" style={{ zIndex: 1 }}></div>
+            <div ref={mapContainer} className="w-full h-full absolute inset-0 map-container" style={{ zIndex: 1 }}></div>
 
             {/* Loading state */}
             {loading && webGLSupported !== false && (

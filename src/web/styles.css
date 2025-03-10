@@ -172,24 +172,28 @@
   max-width: 300px;
   pointer-events: auto;
 }
-
 /* Responsive fixes */
 @media screen and (max-width: 768px) {
-  html, body {
+  html {
+    height: -webkit-fill-available;
+  }
+
+  body {
     -webkit-overflow-scrolling: touch;
     overflow-y: auto;
     overscroll-behavior: contain;
+    min-height: 100vh;
+    /* mobile viewport fix */
+    min-height: -webkit-fill-available;
+    height: -webkit-fill-available;
+    position: relative;
   }
   
   .min-h-screen {
-    min-height: 100vh; /* Use vh instead of % for mobile viewport */
-    min-height: -webkit-fill-available; /* For iOS Safari */
-  }
-  
-  body {
     min-height: 100vh;
+    /* mobile viewport fix */
     min-height: -webkit-fill-available;
-    position: relative;
+    height: -webkit-fill-available;
   }
 
   /* Fix for Android map view display */
@@ -208,6 +212,19 @@
     position: fixed;
     width: 100%;
     z-index: 100 !important;
+  }
+  
+  /* Ensure map container takes full height on mobile devices including Android */
+  div[ref="mapContainer"], 
+  .relative.w-full.h-full.flex-1 > div.w-full.h-full.absolute.inset-0,
+  .map-container {
+    height: 100vh !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 1 !important;
   }
 }
 
