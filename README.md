@@ -57,4 +57,4 @@ npm run collect -- --ignore-existing
 
 ## License
 
-[MIT License](LICENSE) © 2023-2024 Schema Labs
+[MIT License](LICENSE)
