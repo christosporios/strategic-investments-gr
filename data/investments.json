@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generatedAt": "2025-03-09T20:25:06.014Z",
-    "totalInvestments": 20,
+    "generatedAt": "2025-03-16T14:39:04.570Z",
+    "totalInvestments": 25,
     "revisionsExcluded": []
   },
   "investments": [
@@ -1264,6 +1264,258 @@
         "fek": "",
         "diavgeiaADA": "",
         "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/epektasi-dinamikotitas-viomichanikis-monadas-paragogis-proionton-chartou"
+      }
+    },
+    {
+      "dateApproved": "2024-12-24",
+      "beneficiary": "INTERTRADE HELLAS ΑΝΩΝΥΜΟΣ ΕΜΠΟΡΙΚΗ ΚΑΙ ΒΙΟΜΗΧΑΝΙΚΗ ΕΤΑΙΡΕΙΑ ΠΑΡΑΓΩΓΗΣ ΠΡΟΙΟΝΤΩΝ ΧΑΡΤΟΥ Α.Β.Ε.Ε.",
+      "name": "Επέκταση Δυναμικότητας Βιομηχανικής Μονάδας Παραγωγής Προϊόντων Χάρτου",
+      "totalAmount": 99876651,
+      "references": {
+        "fek": "ΦΕΚ Β' 3084/20.4.2023",
+        "diavgeiaADA": "ΨΧΕΓ46ΝΛΣΞ-ΥΥ2"
+      },
+      "amountBreakdown": [
+        {
+          "amount": 48559273,
+          "description": "ΚΤΗΡΙΑΚΕΣ ΕΓΚΑΤΑΣΤΑΣΕΙΣ"
+        },
+        {
+          "amount": 4380117,
+          "description": "ΕΡΓΑ ΔΙΑΜΟΡΦΩΣΗΣ ΠΕΡΙΒΑΛΛΟΝΤΟΣ ΧΩΡΟΥ"
+        },
+        {
+          "amount": 38892762,
+          "description": "ΜΗΧΑΝΟΛΟΓΙΚΟΣ ΕΞΟΠΛΙΣΜΟΣ – ΤΕΧΝΙΚΕΣ (ΕΙΔΙΚΕΣ) ΕΓΚΑΤΑΣΤΑΣΕΙΣ"
+        },
+        {
+          "amount": 1034000,
+          "description": "ΜΕΤΑΦΟΡΙΚΑ ΜΕΣΑ"
+        },
+        {
+          "amount": 7010500,
+          "description": "ΦΩΤΟΒΟΛΤΑΪΚΟΣ ΣΤΑΘΜΟΣ"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Βιομηχανική Μονάδα Παραγωγής Προϊόντων Χάρτου",
+          "textLocation": "Θέση Τσεφλίκι - Περιβόλι, Δημοτική Ενότητα Οινοφύτων, Δήμος Τανάγρας, Περιφερειακή Ενότητα Βοιωτίας, Περιφέρεια Στερεάς Ελλάδας",
+          "lat": 38.3147385,
+          "lon": 23.6502213
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "ΙΔΙΑ ΣΥΜΜΕΤΟΧΗ ΜΕΣΩ ΑΜΚ με ΣΥΜΜΕΤΟΧΗ ΤΡΙΤΩΝ/ΕΠΕΝΔΥΤΩΝ",
+          "perc": 0.23,
+          "amount": 22961762
+        },
+        {
+          "source": "ΤΡΑΠΕΖΙΚΟΣ ΔΑΝΕΙΣΜΟΣ",
+          "perc": 0.52,
+          "amount": 51532525
+        },
+        {
+          "source": "ΕΠΙΧΟΡΗΓΗΣΗ ΚΡΑΤΙΚΗΣ ΕΝΙΣΧΥΣΗΣ",
+          "perc": 0.25,
+          "amount": 25382364
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Επιχορήγηση των επενδυτικών δαπανών",
+          "incentiveType": "INVESTMENT_GRANT"
+        }
+      ],
+      "category": "PRODUCTION_MANUFACTURING",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "ΨΧΕΓ46ΝΛΣΞ-ΥΥ2"
+      }
+    },
+    {
+      "dateApproved": "2024-12-16",
+      "beneficiary": "ELPEN AΝΩΝΥΜΗ ΕΤΑΙΡΕΙΑ ΦΑΡΜΑΚΕΥΤΙΚΗ ΒΙΟΜΗΧΑΝΙΑ",
+      "name": "Έρευνα και ανάπτυξη νέων υπεργενόσημων μορφών και Πειραματικό και ερευνητικό κέντρο",
+      "totalAmount": 22000000,
+      "references": {
+        "fek": "ΦΕΚ Β΄3905",
+        "diavgeiaADA": "6ΛΑ346ΝΛΣΞ-ΣΒΔ"
+      },
+      "amountBreakdown": [
+        {
+          "amount": 16500000,
+          "description": "Δράση 1: Έρευνα και ανάπτυξη νέων υπεργενόσημων μορφών"
+        },
+        {
+          "amount": 5500000,
+          "description": "Δράση 3: Πειραματικό και ερευνητικό κέντρο"
+        }
+      ],
+      "locations": [],
+      "fundingSource": [],
+      "incentivesApproved": [
+        {
+          "name": "Επιχορήγηση για δαπάνες έρευνας και ανάπτυξης",
+          "incentiveType": "INVESTMENT_GRANT"
+        }
+      ],
+      "category": "TECHNOLOGY_INNOVATION",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "6ΛΑ346ΝΛΣΞ-ΣΒΔ",
+        "revisesADA": "ΦΑΡΜΑΚΕΥΤΙ"
+      }
+    },
+    {
+      "dateApproved": "2023-06-16",
+      "beneficiary": "ΣΤΡΙΜ ΠΑΓΚΟΣΜΙΕΣ ΑΝΑΠΤΥΞΕΙΣ ΑΚΙΝΗΤΩΝ ΜΟΝΟΠΡΟΣΩΠΗ Α.Ε",
+      "name": "HULL LOGISTICS PARK",
+      "totalAmount": 244164841,
+      "fek": "ΦΕΚ Β' 3207/17.05.2023",
+      "amountBreakdown": [
+        {
+          "amount": 244164841,
+          "description": "Ανάπτυξη Logistics Park"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Εγκατάσταση στην περιοχή του Θριασίου Πεδίου",
+          "textLocation": "Θριάσιο Πεδίο, Αττική",
+          "lat": 38.113457,
+          "lon": 23.6159702
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "Ίδια κεφάλαια",
+          "perc": 0.3,
+          "amount": 73249452
+        },
+        {
+          "source": "Τραπεζικός δανεισμός",
+          "perc": 0.7,
+          "amount": 170915389
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Ταχεία αδειοδότηση",
+          "incentiveType": "LICENSING_ACCELERATION"
+        },
+        {
+          "name": "Φορολογικά κίνητρα",
+          "incentiveType": "TAX_INCENTIVES"
+        }
+      ],
+      "category": "SERVICES_EDUCATION",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "",
+        "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/hull-logistics-park"
+      }
+    },
+    {
+      "dateApproved": "2023-05-16",
+      "beneficiary": "ΑΘΗΝΑΙΩΝ ΓΗ Α.Ε.",
+      "name": "SANTORINI VALVIS VOLCANIC SPA",
+      "totalAmount": 67500000,
+      "fek": "ΦΕΚ Β' 3201/16.05.2023",
+      "amountBreakdown": [
+        {
+          "amount": 67500000,
+          "description": "Τουριστικό συγκρότημα πολυτελείας"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Τουριστικό συγκρότημα",
+          "textLocation": "Σαντορίνη, Κυκλάδες",
+          "lat": 36.3931562,
+          "lon": 25.4615092
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "Ίδια κεφάλαια",
+          "perc": 1,
+          "amount": 67500000
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Ταχεία αδειοδότηση",
+          "incentiveType": "Licensing"
+        },
+        {
+          "name": "Φορολογικά κίνητρα",
+          "incentiveType": "Tax"
+        }
+      ],
+      "category": "TOURISM_CULTURE",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "",
+        "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/santorini-valvis-volcanic-spa"
+      }
+    },
+    {
+      "dateApproved": "2023-05-02",
+      "beneficiary": "DEMO ΑΒΕΕ ΦΑΡΜΑΚΟΒΙΟΜΗΧΑΝΙΑ",
+      "name": "Βιομηχανική Έρευνα και Ανάπτυξη ενός μονοκλωνικού αντισώματος με κωδικό DM-02 ως βιολογική θεραπεία σε πλασματοκυτταρικές δυσκρασίες (PCD) εντός του Σύγχρονου Κανονιστικού Πλαισίου",
+      "totalAmount": 44433967,
+      "fek": "ΦΕΚ Β' 2889/02.05.2023",
+      "amountBreakdown": [
+        {
+          "amount": 25000000,
+          "description": "Δαπάνες έρευνας και ανάπτυξης"
+        },
+        {
+          "amount": 19433967,
+          "description": "Δαπάνες για την παραγωγή νέων προϊόντων"
+        }
+      ],
+      "locations": [
+        {
+          "description": "Έδρα επιχείρησης",
+          "textLocation": "Δήμος Κρωπίας, Περιφέρεια Αττικής",
+          "lat": 37.8708059,
+          "lon": 23.8346776
+        }
+      ],
+      "fundingSource": [
+        {
+          "source": "Ίδια κεφάλαια",
+          "perc": 0.25,
+          "amount": 11108492
+        },
+        {
+          "source": "Τραπεζικός δανεισμός",
+          "perc": 0.75,
+          "amount": 33325475
+        }
+      ],
+      "incentivesApproved": [
+        {
+          "name": "Φορολογική απαλλαγή",
+          "incentiveType": "TAX_EXEMPTION"
+        },
+        {
+          "name": "Επιτάχυνση αδειοδοτικών διαδικασιών",
+          "incentiveType": "LICENSING_ACCELERATION"
+        },
+        {
+          "name": "Ταχεία εξέταση αιτήσεων",
+          "incentiveType": "FAST_TRACK"
+        }
+      ],
+      "category": "TECHNOLOGY_INNOVATION",
+      "reference": {
+        "fek": "",
+        "diavgeiaADA": "",
+        "ministryUrl": "https://ependyseis.mindev.gov.gr/el/stratigikes/erga/viomichaniki-ereuna-kai-anaptixi-enos-monoklonikou-antisomatos-me-kodiko-dm-02-os-viologiki-therapia-stin-antimetopisi-kakoithon-neoplasion-entos-tou-sigchronou-kanonistikou-plaisiou"
       }
     }
   ]
