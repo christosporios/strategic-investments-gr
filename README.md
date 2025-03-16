@@ -1,4 +1,5 @@
 # Στρατηγικές Επενδύσεις
+⭐  **[Δείτε την εφαρμογή](https://christosporios.github.io/strategic-investments-gr)** ⭐ 
 
 Αναλυτική οπτικοποίηση των στρατηγικών επενδύσεων στην Ελλάδα. Παρουσιάζει δεδομένα από:
 1. Αποφάσεις έγκρισης χορήγησης κινήτρων που έχουν αναρτηθεί στην [Διαύγεια](https://diavgeia.gov.gr)
@@ -57,4 +58,4 @@ npm run collect -- --ignore-existing
 
 ## License
 
-[MIT License](LICENSE) © 2023-2024 Schema Labs
+[MIT License](LICENSE)
